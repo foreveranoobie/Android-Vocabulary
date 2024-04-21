@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_all_words">
+
+    <fragment
+        android:id="@+id/nav_all_words"
+        android:name="com.storozhuk.learningvocabulary.ui.home.AllWordsFragment"
+        android:label="@string/menu_all_words"
+        tools:layout="@layout/fragment_all_words" />
+
+    <fragment
+        android:id="@+id/nav_add_language"
+        android:name="com.storozhuk.learningvocabulary.ui.language.AddLanguageFragment"
+        android:label="@string/menu_add_language"
+        tools:layout="@layout/fragment_add_language" />
+</navigation>
