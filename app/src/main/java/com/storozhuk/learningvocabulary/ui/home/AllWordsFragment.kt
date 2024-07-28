@@ -102,7 +102,6 @@ class AllWordsFragment: Fragment(R.layout.fragment_all_words) {
 
         //Original columns
         val original = AllWordsFragmentHelper.createTextView(fragmentView.context, AllWordsFragmentHelper.separateTextIntoRows(wordDto.original))
-        //val original = AllWordsFragmentHelper.createTextView(fragmentView.context, wordDto.original)
         val originalLayout = AllWordsFragmentHelper.createLinearLayout(fragmentView.context, original)
 
         //Translation column
@@ -110,12 +109,8 @@ class AllWordsFragment: Fragment(R.layout.fragment_all_words) {
         val translationLayout = AllWordsFragmentHelper.createLinearLayout(fragmentView.context, translation)
 
         //Subject column
-        //val subject = AllWordsFragmentHelper.createTextView(fragmentView.context, wordDto.subject)
-        //val subjectLayout = AllWordsFragmentHelper.createLinearLayout(fragmentView.context, subject)
-
         tableRow.addView(originalLayout)
         tableRow.addView(translationLayout)
-        //tableRow.addView(subjectLayout)
         tableRow.setOnLongClickListener{showEditWordPopup(fragmentView, indexNum)}
 
         wordsTable.addView(tableRow)
@@ -130,9 +125,6 @@ class AllWordsFragment: Fragment(R.layout.fragment_all_words) {
         val originalText = wordDto.original
         val translatedText = wordDto.translate
         val subjectText = wordDto.subject
-        /*val originalText = ((tableRow[0] as LinearLayout)[0] as TextView).text.toString()
-        val translatedText = ((tableRow[1] as LinearLayout)[0] as TextView).text.toString()
-        val subjectText =((tableRow[2] as LinearLayout)[0] as TextView).text.toString()*/
 
         selectedEditId = wordsRepository.findIdByOriginal(originalText)
         val inflater = LayoutInflater.from(context)
@@ -179,8 +171,6 @@ class AllWordsFragment: Fragment(R.layout.fragment_all_words) {
         val dataAdapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, languagesList)
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         languagesFilter.adapter = dataAdapter
-        languagesFilter.isEnabled = true
-        languagesFilter.isVisible = true
     }
 
     private fun updateLanguageSpinnerOnEditWordPopup(removeWordPopup: View) {

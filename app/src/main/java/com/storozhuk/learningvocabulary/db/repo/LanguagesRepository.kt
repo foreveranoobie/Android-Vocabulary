@@ -51,4 +51,8 @@ class LanguagesRepository(private val database: SQLiteDatabase, private val dbHe
         cursor.close()
         return id
     }
+
+    fun cleanTable(){
+        database.delete(dbHelper.LANGUAGES_TABLE_NAME, null, null)
+    }
 }

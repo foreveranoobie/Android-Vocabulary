@@ -72,4 +72,8 @@ class WordsRepository(private val database: SQLiteDatabase, private val dbHelper
     fun delete(id: Int): Int{
         return database.delete(dbHelper.WORDS_TABLE_NAME, "${dbHelper.WORDS_ID_COLUMN} = ${id}", null)
     }
+
+    fun cleanTable(){
+        database.delete(dbHelper.WORDS_TABLE_NAME, null, null)
+    }
 }

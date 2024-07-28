@@ -12,10 +12,16 @@ lifecycleLivedataKtx = "2.6.1"
 lifecycleViewmodelKtx = "2.6.1"
 navigationFragmentKtx = "2.6.0"
 navigationUiKtx = "2.6.0"
+robolectric = "4.12"
+gtruth = "1.4.2"
+androidx-navigation-testing = "2.7.7"
+androidx-fragment-testing = "1.8.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
+gtruth = { group = "com.google.truth", name = "truth", version.ref = "gtruth" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -25,6 +31,9 @@ androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecy
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
+androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "androidx-navigation-testing" }
+androidx-fragment-testing = { group = "androidx.fragment", name = "fragment-testing", version.ref = "androidx-fragment-testing" }
+androidx-fragment-testing-manifest = { group = "androidx.fragment", name = "fragment-testing-manifest", version.ref = "androidx-fragment-testing" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

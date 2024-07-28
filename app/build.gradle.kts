@@ -48,6 +48,12 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.gtruth)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.navigation.testing)
+    debugImplementation(libs.androidx.fragment.testing)
+    debugImplementation(libs.androidx.fragment.testing.manifest)
+
 }

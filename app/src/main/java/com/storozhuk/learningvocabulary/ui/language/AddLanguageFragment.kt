@@ -26,7 +26,6 @@ class AddLanguageFragment: Fragment(R.layout.fragment_add_language) {
     }
 
     private fun initLanguagesList(){
-        System.err.println("Languages initialized")
         val languagesRecyclerView = fragmentView.findViewById<RecyclerView>(R.id.languages)
         val cursor = languagesRepository.fetch()
         val dataset = ArrayList<String>()

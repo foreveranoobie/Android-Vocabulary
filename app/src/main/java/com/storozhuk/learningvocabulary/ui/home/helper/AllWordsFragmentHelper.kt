@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.annotation.VisibleForTesting
 import com.storozhuk.learningvocabulary.R
 import java.lang.StringBuilder
 

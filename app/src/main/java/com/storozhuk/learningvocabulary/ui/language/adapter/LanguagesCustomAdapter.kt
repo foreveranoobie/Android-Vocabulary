@@ -70,7 +70,6 @@ class LanguagesCustomAdapter(
         langValue: String,
         langPosition: Int
     ): Boolean {
-        System.out.println("Edit language for position=${langPosition}")
         val inflater = LayoutInflater.from(viewHolder.itemView.context)
         val editLanguagePopup = inflater.inflate(R.layout.edit_language_popup, null)
 
@@ -111,7 +110,6 @@ class LanguagesCustomAdapter(
 
     private fun deleteLanguage(languageValue: String): Int {
         val languageId = languagesRepository.fetchId(languageValue)
-        System.err.println("Removing language with id=${languageId}")
         return languagesRepository.delete(languageId)
     }
 
@@ -121,7 +119,6 @@ class LanguagesCustomAdapter(
         val languageId =
             languagesRepository.fetchId(layoutView.findViewById<TextView>(R.id.language_name_txt).text.toString())
         val languageDto = LanguageDto(languageId, languageValue)
-        System.err.println("Updating language with ID=${languageId} to value=${languageValue}")
         if (languagesRepository.update(languageDto) == 1) {
             return languageDto
         }
