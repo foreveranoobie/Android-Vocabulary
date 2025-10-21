@@ -43,6 +43,29 @@ class WordsRepository(private val database: SQLiteDatabase, private val dbHelper
         return cursor
     }
 
+    fun fetchSubjectsForLanguage(languageId: Int): Cursor {
+        val query = """SELECT DISTINCT(w.subject) FROM words w
+        INNER JOIN languages l
+        ON w.language_id = l.id
+        WHERE l.id=${languageId}
+        """.trimMargin()
+        val cursor = database.rawQuery(query, null)
+        cursor?.moveToFirst()
+        return cursor
+    }
+
+    fun fetchForLanguageAndSubject(languageId: Int, subject: String): Cursor {
+        val query = """SELECT w.id, w.original, w.translate, w.subject, l.language FROM words w
+        INNER JOIN languages l
+        ON w.language_id = l.id
+        WHERE l.id=${languageId} AND w.subject='${subject}'
+        ORDER BY w.id
+        """.trimMargin()
+        val cursor = database.rawQuery(query, null)
+        cursor?.moveToFirst()
+        return cursor
+    }
+
     fun update(wordDto: WordDto): Int{
         val contentValues = ContentValues()
         contentValues.put(dbHelper.WORDS_ORIGINAL_COLUMN, wordDto.original)

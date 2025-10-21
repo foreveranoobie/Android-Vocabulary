@@ -71,11 +71,22 @@
         android:id="@+id/languages_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="16dp"
         android:backgroundTint="#000000"
         android:spinnerMode="dropdown"
         app:layout_constraintStart_toEndOf="@+id/add_word_btn"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/subjects_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#000000"
+        android:spinnerMode="dropdown"
+        app:layout_constraintStart_toEndOf="@+id/languages_filter"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

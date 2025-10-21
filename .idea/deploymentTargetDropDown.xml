@@ -5,6 +5,15 @@
       <entry key="app">
         <State />
       </entry>
+      <entry key="shouldAddLanguages_whenUsingAddLanguageFragment_givenLanguages()">
+        <State />
+      </entry>
+      <entry key="shouldAddPolishLang()">
+        <State />
+      </entry>
+      <entry key="shouldShowAddedLanguageOnWordsFragment_whenUsingAddLanguageFragment_givenAddedLanguage()">
+        <State />
+      </entry>
     </value>
   </component>
 </project>
