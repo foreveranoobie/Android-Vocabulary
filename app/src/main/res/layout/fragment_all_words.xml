@@ -14,11 +14,11 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="281dp"
+        android:backgroundTint="@color/button_color"
+        android:text="Add Word"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="Add Word"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -71,7 +71,7 @@
         android:id="@+id/languages_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="16dp"
         android:backgroundTint="#000000"
         android:spinnerMode="dropdown"
@@ -82,7 +82,7 @@
         android:id="@+id/subjects_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="16dp"
         android:backgroundTint="#000000"
         android:spinnerMode="dropdown"

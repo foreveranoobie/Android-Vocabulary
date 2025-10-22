@@ -14,13 +14,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="35dp">
+            android:paddingTop="35dp"
+            android:paddingBottom="35dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
 
             <ImageButton
                 android:id="@+id/close_window_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="250dp"
+                android:layout_gravity="right"
                 app:srcCompat="@android:drawable/ic_delete" />
 
             <TextView
@@ -79,14 +82,16 @@
                 android:id="@+id/language_option"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="44dp"
+                android:layout_gravity="center"
                 android:layout_marginTop="32dp" />
 
             <Button
                 android:id="@+id/add_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="148dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="35dp"
+                android:backgroundTint="@color/button_color"
                 android:text="Add Word" />
 
         </LinearLayout>

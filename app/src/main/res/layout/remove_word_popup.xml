@@ -15,94 +15,100 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="35dp">
+            android:paddingTop="35dp"
+            android:paddingBottom="35dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
 
             <ImageButton
                 android:id="@+id/close_window_btn_edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="250dp"
+                android:layout_gravity="right"
                 app:srcCompat="@android:drawable/ic_delete" />
 
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="45dp"
-                android:text="Original" />
+                android:text="Original"
+                android:layout_marginLeft="20dp"/>
 
             <EditText
                 android:id="@+id/word_original_input_edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="45dp"
                 android:ems="10"
                 android:inputType="text"
-                android:text="" />
+                android:text=""
+                android:layout_marginLeft="20dp"/>
 
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="45dp"
                 android:layout_marginTop="32dp"
-                android:text="Translation" />
+                android:text="Translation"
+                android:layout_marginLeft="20dp"/>
 
             <EditText
                 android:id="@+id/word_translated_input_edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="45dp"
                 android:layout_marginTop="14dp"
                 android:ems="10"
                 android:inputType="text"
-                android:text="" />
+                android:text=""
+                android:layout_marginLeft="20dp"/>
 
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="45dp"
                 android:layout_marginTop="32dp"
-                android:text="Subject" />
+                android:text="Subject"
+                android:layout_marginLeft="20dp"/>
 
             <EditText
                 android:id="@+id/word_subject_input_edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="44dp"
                 android:layout_marginTop="14dp"
                 android:ems="10"
                 android:inputType="text"
-                android:text="" />
+                android:text=""
+                android:layout_marginLeft="20dp"/>
 
             <Spinner
                 android:id="@+id/update_lang_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="44dp"
-                android:layout_marginTop="16dp" />
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
 
                 <Button
                     android:id="@+id/update_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="75dp"
                     android:layout_marginTop="24dp"
-                    android:text="Update" />
+                    android:backgroundTint="@color/button_neutral_color"
+                    android:text="Update"
+                    android:layout_marginEnd="10dp"/>
 
                 <Button
                     android:id="@+id/delete_word_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="35dp"
                     android:layout_marginTop="24dp"
-                    android:text="Delete" />
+                    android:backgroundTint="@color/button_negative_color"
+                    android:text="Delete"
+                    android:layout_marginStart="10dp"/>
             </LinearLayout>
 
         </LinearLayout>
