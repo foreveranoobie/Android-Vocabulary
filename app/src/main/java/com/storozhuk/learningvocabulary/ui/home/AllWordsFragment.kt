@@ -58,7 +58,6 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
             }
         }
 
-
         var dataAdapter =
             ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, languagesList)
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -120,6 +119,13 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
             }
         } else {
             selectedSubject = null
+            val subjectsFilter = fragmentView.findViewById<Spinner>(R.id.subjects_filter)
+            val dataAdapter =
+                ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item,
+                    ArrayList<String>()
+                )
+            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            subjectsFilter.adapter = dataAdapter
         }
     }
 
@@ -226,9 +232,15 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
         removeWordPopup.findViewById<EditText>(R.id.word_subject_input_edit).setText(subjectText)
 
         removeWordPopup.findViewById<Button>(R.id.update_btn)
-            .setOnClickListener { updateWord(removeWordPopup) }
+            .setOnClickListener {
+                updateWord(removeWordPopup)
+                popupWindow.dismiss()
+            }
         removeWordPopup.findViewById<Button>(R.id.delete_word_btn)
-            .setOnClickListener { deleteWord() }
+            .setOnClickListener {
+                deleteWord()
+                popupWindow.dismiss()
+            }
         removeWordPopup.findViewById<ImageButton>(R.id.close_window_btn_edit).setOnClickListener {
             popupWindow.dismiss()
         }

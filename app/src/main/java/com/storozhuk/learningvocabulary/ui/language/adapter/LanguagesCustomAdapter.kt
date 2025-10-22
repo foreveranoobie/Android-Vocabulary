@@ -94,6 +94,7 @@ class LanguagesCustomAdapter(
                 languageNameTxt.text = languageDto.language
                 notifyItemChanged(langPosition)
             }
+            popupWindow.dismiss()
         }
 
         editLanguagePopup.findViewById<Button>(R.id.remove_lang_btn).setOnClickListener {
