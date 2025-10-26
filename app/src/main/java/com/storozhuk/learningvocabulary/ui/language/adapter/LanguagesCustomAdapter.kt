@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.view.allViews
 import androidx.recyclerview.widget.RecyclerView
 import com.storozhuk.learningvocabulary.R
@@ -48,12 +49,15 @@ class LanguagesCustomAdapter(
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
-        //Ignore edit for the very first position because it encompasses all languages
-        //if (position > 0) {
+        if(position == 0){
+            viewHolder.itemView.setPadding(0, 0, 0, 2);
+        } else if(position == dataSet.size - 1){
+            viewHolder.itemView.setPadding(0, 2, 0, 0);
+        }
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         viewHolder.textView.text = dataSet[position]
-        viewHolder.textView.setOnLongClickListener {
+        viewHolder.textView.setOnClickListener {
             showEditLanguagePopup(
                 viewHolder,
                 dataSet[position], position

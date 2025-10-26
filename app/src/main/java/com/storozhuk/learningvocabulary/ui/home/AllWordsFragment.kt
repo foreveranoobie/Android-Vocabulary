@@ -1,11 +1,15 @@
 package com.storozhuk.learningvocabulary.ui.home
 
+import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -14,6 +18,7 @@ import android.widget.PopupWindow
 import android.widget.Spinner
 import android.widget.TableLayout
 import android.widget.TableRow
+import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.core.view.size
 import androidx.fragment.app.Fragment
@@ -85,6 +90,12 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
         }
     }
 
+    private fun setSubjectsArrayForAutoCompleteInput() {
+        val dataAdapter =
+            ArrayAdapter(requireActivity(), android.R.layout.select_dialog_item, subjectsList)
+
+    }
+
     private fun updateSubjects(selectedLanguageId: Int) {
         if (selectedLanguageId != 1) {
             val subjectsFilter = fragmentView.findViewById<Spinner>(R.id.subjects_filter)
@@ -121,7 +132,8 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
             selectedSubject = null
             val subjectsFilter = fragmentView.findViewById<Spinner>(R.id.subjects_filter)
             val dataAdapter =
-                ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item,
+                ArrayAdapter(
+                    requireActivity(), android.R.layout.simple_spinner_item,
                     ArrayList<String>()
                 )
             dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -180,28 +192,41 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
             TableLayout.LayoutParams.MATCH_PARENT,
             TableLayout.LayoutParams.WRAP_CONTENT
         )
+        val originalParams = TableRow.LayoutParams(
+            TableRow.LayoutParams.WRAP_CONTENT,
+            TableRow.LayoutParams.MATCH_PARENT,
+            1f
+        )
 
         //Original columns
         val original = AllWordsFragmentHelper.createTextView(
             fragmentView.context,
             AllWordsFragmentHelper.separateTextIntoRows(wordDto.original)
         )
-        val originalLayout =
-            AllWordsFragmentHelper.createLinearLayout(fragmentView.context, original)
+        original.layoutParams = originalParams
+        original.setBackgroundResource(R.drawable.table_item_left_elem)
+        original.setPadding(5.dpToPx(fragmentView.context), 0, 0, 0)
 
         //Translation column
         val translation = AllWordsFragmentHelper.createTextView(
             fragmentView.context,
             AllWordsFragmentHelper.separateTextIntoRows(wordDto.translate)
         )
-        val translationLayout =
-            AllWordsFragmentHelper.createLinearLayout(fragmentView.context, translation)
+        translation.layoutParams = originalParams
+        translation.setBackgroundResource(R.drawable.table_item_right_elem)
+        translation.setPadding(5.dpToPx(fragmentView.context), 0, 0, 0)
 
         //Subject column
-        tableRow.addView(originalLayout)
-        tableRow.addView(translationLayout)
-        tableRow.setOnLongClickListener { showEditWordPopup(fragmentView, indexNum) }
-
+        tableRow.layoutParams = TableRow.LayoutParams(
+            TableRow.LayoutParams.MATCH_PARENT,
+            TableRow.LayoutParams.MATCH_PARENT,
+            0f
+        )
+        tableRow.setPadding(0, 0, 0, 5)
+        tableRow.setOnClickListener { showEditWordPopup(fragmentView, indexNum) }
+        tableRow.setBackgroundColor(Color.parseColor("#CCCCCC"))
+        tableRow.addView(original)
+        tableRow.addView(translation)
         wordsTable.addView(tableRow)
         fragmentView.refreshDrawableState()
     }
@@ -260,10 +285,14 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
         val focusable = true // lets taps outside the popup also dismiss it
         val popupWindow = PopupWindow(addWordPopup, width, height, focusable)
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
-        addWordPopup.findViewById<Button>(R.id.add_btn).setOnClickListener { addWord(addWordPopup) }
+        addWordPopup.findViewById<Button>(R.id.add_btn).setOnClickListener {
+            addWord(addWordPopup)
+            updateRows()
+            updateSubjects(selectedLanguageId)
+            popupWindow.dismiss()
+        }
         addWordPopup.findViewById<ImageButton>(R.id.close_window_btn).setOnClickListener {
             popupWindow.dismiss()
-            updateRows()
         }
 
         val languagesFilter = addWordPopup.findViewById<Spinner>(R.id.language_option)
@@ -271,6 +300,39 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
             ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, languagesList)
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         languagesFilter.adapter = dataAdapter
+
+        languagesFilter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if (position != 0) {
+                    val languageIdToFetchFor = languagesRepository.fetchId(languagesList[position])
+                    val subjectsForLanguage = ArrayList<String>()
+                    wordsRepository.fetchSubjectsForLanguage(languageIdToFetchFor)
+                        .use { cursor ->
+                            while (!cursor.isAfterLast) {
+                                subjectsForLanguage.add(cursor.getString(0))
+                                cursor.moveToNext()
+                            }
+                        }
+                    val subjectsInput =
+                        addWordPopup.findViewById<AutoCompleteTextView>(R.id.word_subject_input)
+                    val subjectsDataAdapter = ArrayAdapter(
+                        requireActivity(), android.R.layout.select_dialog_item,
+                        subjectsForLanguage
+                    )
+                    subjectsInput.threshold = 1
+                    subjectsInput.setAdapter(subjectsDataAdapter)
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Do nothing
+            }
+        }
     }
 
     private fun updateLanguageSpinnerOnEditWordPopup(removeWordPopup: View) {
@@ -295,11 +357,7 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
             val languageId =
                 languagesRepository.fetchId(view.findViewById<Spinner>(R.id.language_option).selectedItem.toString())
             val wordDto = WordDto(null, original, translated, subject, languageId)
-            if (wordsRepository.insert(wordDto) >= 0) {
-                view.findViewById<EditText>(R.id.word_original_input).setText("")
-                view.findViewById<EditText>(R.id.word_translated_input).setText("")
-                view.findViewById<EditText>(R.id.word_subject_input).setText("")
-            }
+            wordsRepository.insert(wordDto)
         }
     }
 
@@ -332,5 +390,9 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
     private fun cleanTable() {
         val wordsTable = fragmentView.findViewById<TableLayout>(R.id.words_table)
         wordsTable.removeViews(1, wordsTable.size - 1)
+    }
+
+    private fun Int.dpToPx(context: Context): Int {
+        return (this * context.resources.displayMetrics.density).toInt()
     }
 }

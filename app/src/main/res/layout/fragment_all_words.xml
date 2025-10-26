@@ -7,22 +7,46 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.AllWordsFragment">
 
-    <Button
-        android:id="@+id/add_word_btn"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="281dp"
-        android:backgroundTint="@color/button_color"
-        android:text="Add Word"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:id="@+id/add_word_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/button_color"
+            android:text="Add Word" />
+
+        <Spinner
+            android:id="@+id/languages_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#000000"
+            android:spinnerMode="dropdown" />
+
+        <Spinner
+            android:id="@+id/subjects_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#000000"
+            android:spinnerMode="dropdown" />
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_constraintBaseline_toBottomOf="@id/header_layout"
+        android:layout_marginTop="75dp">
 
         <TableLayout
             android:id="@+id/words_table"
@@ -30,63 +54,36 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:paddingTop="65dp"
             app:tabMode="scrollable">
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:background="#CCCCCC">
 
                     <TextView
                         android:id="@+id/textOriginal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Word"
-                        android:textSize="18sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
+                        android:layout_weight="1"
+                        android:textColor="#000000"
+                        android:textSize="18sp"
+                        android:background="@drawable/table_header_left_elem"
+                        android:paddingStart="5dp"/>
 
                     <TextView
                         android:id="@+id/textTranslated"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Translation"
-                        android:textSize="18sp" />
-                </LinearLayout>
+                        android:layout_weight="1"
+                        android:textColor="#000000"
+                        android:textSize="18sp"
+                        android:paddingStart="5dp"/>
 
             </TableRow>
         </TableLayout>
     </ScrollView>
-
-    <Spinner
-        android:id="@+id/languages_filter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#000000"
-        android:spinnerMode="dropdown"
-        app:layout_constraintStart_toEndOf="@+id/add_word_btn"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Spinner
-        android:id="@+id/subjects_filter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#000000"
-        android:spinnerMode="dropdown"
-        app:layout_constraintStart_toEndOf="@+id/languages_filter"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
