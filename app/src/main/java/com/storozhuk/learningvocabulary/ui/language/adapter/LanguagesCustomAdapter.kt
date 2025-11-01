@@ -4,23 +4,23 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.core.view.allViews
 import androidx.recyclerview.widget.RecyclerView
 import com.storozhuk.learningvocabulary.R
 import com.storozhuk.learningvocabulary.db.repo.LanguagesRepository
 import com.storozhuk.learningvocabulary.dto.LanguageDto
-import com.storozhuk.learningvocabulary.ui.language.AddLanguageFragment
+import com.storozhuk.learningvocabulary.ui.helper.UiHelper
 
 class LanguagesCustomAdapter(
     private val dataSet: MutableList<String>,
-    private val languagesRepository: LanguagesRepository
+    private val languagesRepository: LanguagesRepository,
+    private val window: Window
 ) :
     RecyclerView.Adapter<LanguagesCustomAdapter.ViewHolder>() {
 
@@ -82,6 +82,11 @@ class LanguagesCustomAdapter(
         val focusable = true // lets taps outside the popup also dismiss it
         val popupWindow = PopupWindow(editLanguagePopup, width, height, focusable)
         popupWindow.showAtLocation(viewHolder.itemView, Gravity.CENTER, 0, 0)
+        popupWindow.setOnDismissListener {
+            UiHelper.dimBackground(window, 0f) // Remove dim when dismissed
+        }
+
+        UiHelper.dimBackground(window, 0.5f) // Add background dim
 
         val languageNameTxt = editLanguagePopup.findViewById<TextView>(R.id.language_name_txt)
         editLanguagePopup.findViewById<EditText>(R.id.edit_language_input).setText(langValue)

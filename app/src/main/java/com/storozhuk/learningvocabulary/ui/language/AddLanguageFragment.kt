@@ -35,7 +35,7 @@ class AddLanguageFragment: Fragment(R.layout.fragment_add_language) {
             dataset.add(cursor.getString(1))
             cursor.moveToNext()
         }
-        val languagesCustomAdapter = LanguagesCustomAdapter(dataset, languagesRepository)
+        val languagesCustomAdapter = LanguagesCustomAdapter(dataset, languagesRepository, requireActivity().window)
         languagesRecyclerView.adapter = languagesCustomAdapter
         languagesRecyclerView.setLayoutManager(LinearLayoutManager(requireActivity()))
     }
