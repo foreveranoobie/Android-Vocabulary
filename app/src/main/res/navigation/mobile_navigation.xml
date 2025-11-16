@@ -16,4 +16,10 @@
         android:name="com.storozhuk.learningvocabulary.ui.language.AddLanguageFragment"
         android:label="@string/menu_add_language"
         tools:layout="@layout/fragment_add_language" />
+
+    <fragment
+        android:id="@+id/nav_add_subject"
+        android:name="com.storozhuk.learningvocabulary.ui.subject.AddSubjectFragment"
+        android:label="@string/menu_add_language"
+        tools:layout="@layout/fragment_add_subject" />
 </navigation>

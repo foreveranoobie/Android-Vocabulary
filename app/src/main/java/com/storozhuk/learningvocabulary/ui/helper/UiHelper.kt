@@ -1,7 +1,9 @@
 package com.storozhuk.learningvocabulary.ui.helper
 
+import android.content.Context
 import android.database.Cursor
 import android.view.Window
+import android.widget.Toast
 
 class UiHelper {
     companion object {
@@ -10,6 +12,15 @@ class UiHelper {
             val layoutParams = activityWindow.attributes
             layoutParams.alpha = 1f - dimAmount
             activityWindow.attributes = layoutParams
+        }
+
+        @JvmStatic
+        fun showToast(context: Context, message: String){
+            Toast.makeText(
+                context,
+                message,
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
         @JvmStatic

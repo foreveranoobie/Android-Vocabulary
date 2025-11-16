@@ -8,12 +8,10 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.storozhuk.learningvocabulary.ui.home.AllWordsFragment
 import com.storozhuk.learningvocabulary.ui.language.AddLanguageFragment
 import com.storozhuk.learningvocabulary.util.ViewMatcher.withRecyclerViewContainingText
 import com.storozhuk.learningvocabulary.util.ViewMatcher.withSpinnerContainingText
-import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,10 +36,10 @@ class AllWordsFragmentEtETest {
         FragmentScenario.launchInContainer(AddLanguageFragment::class.java)
 
         //when
-        onView(withId(R.id.new_language_field)).perform(typeText(languageFirst))
-        onView(withId(R.id.add_language_btn)).perform(click())
-        onView(withId(R.id.new_language_field)).perform(typeText(languageSecond))
-        onView(withId(R.id.add_language_btn)).perform(click())
+        onView(withId(R.id.new_subject_field)).perform(typeText(languageFirst))
+        onView(withId(R.id.add_subject_btn)).perform(click())
+        onView(withId(R.id.new_subject_field)).perform(typeText(languageSecond))
+        onView(withId(R.id.add_subject_btn)).perform(click())
 
         //then
         onView(withId(R.id.languages)).check(ViewAssertions.matches(withRecyclerViewContainingText(languageFirst)))
@@ -56,12 +54,12 @@ class AllWordsFragmentEtETest {
         FragmentScenario.launchInContainer(AddLanguageFragment::class.java)
 
         //when
-        onView(withId(R.id.new_language_field)).perform(typeText(givenLanguage))
-        onView(withId(R.id.add_language_btn)).perform(click())
+        onView(withId(R.id.new_subject_field)).perform(typeText(givenLanguage))
+        onView(withId(R.id.add_subject_btn)).perform(click())
 
         FragmentScenario.launchInContainer(AllWordsFragment::class.java)
 
         //then
-        onView(withId(R.id.languages_filter)).check(ViewAssertions.matches(withSpinnerContainingText(givenLanguage)));
+        onView(withId(R.id.subjects_languages_filter)).check(ViewAssertions.matches(withSpinnerContainingText(givenLanguage)));
     }
 }

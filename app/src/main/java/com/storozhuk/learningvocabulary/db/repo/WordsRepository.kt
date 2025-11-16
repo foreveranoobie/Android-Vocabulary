@@ -1,53 +1,49 @@
 package com.storozhuk.learningvocabulary.db.repo
 
 import android.content.ContentValues
-import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import com.storozhuk.learningvocabulary.db.helper.DatabaseHelper
-import com.storozhuk.learningvocabulary.dto.WordDto
-import java.sql.SQLException
-import java.util.Arrays
+import com.storozhuk.learningvocabulary.dto.data.WordDataDto
+import com.storozhuk.learningvocabulary.dto.ui.WordDto
 
 class WordsRepository(private val database: SQLiteDatabase, private val dbHelper: DatabaseHelper) {
 
-    fun insert(wordDto: WordDto): Long{
-        val contentValues: ContentValues = ContentValues()
+    private val WHERE_ID_EQUALS = "${dbHelper.WORDS_ID_COLUMN}=?"
+
+    fun insert(wordDto: WordDataDto): Long{
+        val contentValues = ContentValues()
         contentValues.put(dbHelper.WORDS_ORIGINAL_COLUMN, wordDto.original)
         contentValues.put(dbHelper.WORDS_TRANSLATE_COLUMN, wordDto.translate)
-        contentValues.put(dbHelper.WORDS_SUBJECT_COLUMN, wordDto.subject)
-        contentValues.put(dbHelper.WORDS_LANGUAGE_ID_COLUMN, wordDto.languageId)
+        contentValues.put(dbHelper.WORDS_SUBJECT_ID_COLUMN, wordDto.subjectId)
         return database.insert(dbHelper.WORDS_TABLE_NAME, null, contentValues)
     }
 
     fun fetch(): Cursor {
-        val query = """SELECT w.id, w.original, w.translate, w.subject, l.language FROM words w
-        INNER JOIN languages l
-        ON w.language_id = l.id
+        val query = """SELECT w.id, w.original, w.translate, s.subject, s.language_id FROM words w
+        INNER JOIN subjects s
+        ON w.subject_id = s.id
         ORDER BY w.id
         """.trimMargin()
         val cursor = database.rawQuery(query, null)
         cursor?.moveToFirst()
+        return cursor
+    }
+
+    fun fetchById(id: Int): Cursor{
+        val cursor = database.query(dbHelper.WORDS_TABLE_NAME, arrayOf(dbHelper.WORDS_ID_COLUMN, dbHelper.WORDS_ORIGINAL_COLUMN,
+            dbHelper.WORDS_TRANSLATE_COLUMN, dbHelper.WORDS_SUBJECT_ID_COLUMN), WHERE_ID_EQUALS,
+            arrayOf(id.toString()), null, null, null)
+        cursor.moveToFirst()
         return cursor
     }
 
     fun fetchForLanguage(languageId: Int): Cursor {
-        val query = """SELECT w.id, w.original, w.translate, w.subject, l.language FROM words w
-        INNER JOIN languages l
-        ON w.language_id = l.id
-        WHERE l.id=${languageId}
+        val query = """SELECT w.id, w.original, w.translate, s.subject, s.language_id FROM words w
+        INNER JOIN subjects s
+        ON w.subject_id = s.id
+        WHERE s.language_id=${languageId}
         ORDER BY w.id
-        """.trimMargin()
-        val cursor = database.rawQuery(query, null)
-        cursor?.moveToFirst()
-        return cursor
-    }
-
-    fun fetchSubjectsForLanguage(languageId: Int): Cursor {
-        val query = """SELECT DISTINCT(w.subject) FROM words w
-        INNER JOIN languages l
-        ON w.language_id = l.id
-        WHERE l.id=${languageId}
         """.trimMargin()
         val cursor = database.rawQuery(query, null)
         cursor?.moveToFirst()
@@ -55,10 +51,10 @@ class WordsRepository(private val database: SQLiteDatabase, private val dbHelper
     }
 
     fun fetchForLanguageAndSubject(languageId: Int, subject: String): Cursor {
-        val query = """SELECT w.id, w.original, w.translate, w.subject, l.language FROM words w
-        INNER JOIN languages l
-        ON w.language_id = l.id
-        WHERE l.id=${languageId} AND w.subject='${subject}'
+        val query = """SELECT w.id, w.original, w.translate, s.subject FROM words w
+        INNER JOIN subjects s
+        ON w.subject_id = s.id
+        WHERE s.language_id=${languageId} AND s.subject='${subject}'
         ORDER BY w.id
         """.trimMargin()
         val cursor = database.rawQuery(query, null)
@@ -66,12 +62,11 @@ class WordsRepository(private val database: SQLiteDatabase, private val dbHelper
         return cursor
     }
 
-    fun update(wordDto: WordDto): Int{
+    fun update(wordDto: WordDataDto): Int{
         val contentValues = ContentValues()
         contentValues.put(dbHelper.WORDS_ORIGINAL_COLUMN, wordDto.original)
         contentValues.put(dbHelper.WORDS_TRANSLATE_COLUMN, wordDto.translate)
-        contentValues.put(dbHelper.WORDS_SUBJECT_COLUMN, wordDto.subject)
-        contentValues.put(dbHelper.WORDS_LANGUAGE_ID_COLUMN, wordDto.languageId)
+        contentValues.put(dbHelper.WORDS_SUBJECT_ID_COLUMN, wordDto.subjectId)
         return database.update(dbHelper.WORDS_TABLE_NAME, contentValues, "${dbHelper.WORDS_ID_COLUMN} = ${wordDto.id}", null)
     }
 

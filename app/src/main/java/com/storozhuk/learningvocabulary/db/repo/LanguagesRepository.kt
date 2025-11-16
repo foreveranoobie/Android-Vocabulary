@@ -4,9 +4,12 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import com.storozhuk.learningvocabulary.db.helper.DatabaseHelper
-import com.storozhuk.learningvocabulary.dto.LanguageDto
+import com.storozhuk.learningvocabulary.dto.ui.LanguageDto
 
 class LanguagesRepository(private val database: SQLiteDatabase, private val dbHelper: DatabaseHelper) {
+
+    private val WHERE_ID_EQUALS = "${dbHelper.LANGUAGES_ID_COLUMN}=?"
+
     fun insert(languageDto: LanguageDto): Long{
         val contentValues = ContentValues()
         contentValues.put(dbHelper.LANGUAGES_LANGUAGE_COLUMN, languageDto.language)
@@ -18,6 +21,13 @@ class LanguagesRepository(private val database: SQLiteDatabase, private val dbHe
             arrayOf(dbHelper.LANGUAGES_ID_COLUMN, dbHelper.LANGUAGES_LANGUAGE_COLUMN)
         val cursor =
             database.query(dbHelper.LANGUAGES_TABLE_NAME, columns, null, null, null, null, dbHelper.LANGUAGES_ID_COLUMN);
+        cursor?.moveToFirst()
+        return cursor
+    }
+
+    fun fetchLanguageById(id: Int): Cursor {
+        val cursor = database.query(dbHelper.LANGUAGES_TABLE_NAME, arrayOf(dbHelper.LANGUAGES_LANGUAGE_COLUMN),
+            WHERE_ID_EQUALS, arrayOf(id.toString()), null, null, null)
         cursor?.moveToFirst()
         return cursor
     }
@@ -45,7 +55,7 @@ class LanguagesRepository(private val database: SQLiteDatabase, private val dbHe
         val columns =
             arrayOf(dbHelper.LANGUAGES_ID_COLUMN)
         val cursor =
-            database.query(dbHelper.LANGUAGES_TABLE_NAME, columns, "${dbHelper.LANGUAGES_LANGUAGE_COLUMN} LIKE '${language}'", null, null, null, null);
+            database.query(dbHelper.LANGUAGES_TABLE_NAME, columns, "${dbHelper.LANGUAGES_LANGUAGE_COLUMN}='${language}'", null, null, null, null);
         cursor?.moveToFirst()
         val id = cursor.getInt(0)
         cursor.close()

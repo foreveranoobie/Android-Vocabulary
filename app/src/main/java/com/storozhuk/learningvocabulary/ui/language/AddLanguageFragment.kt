@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.storozhuk.learningvocabulary.R
 import com.storozhuk.learningvocabulary.application.VocabularyContext
 import com.storozhuk.learningvocabulary.db.repo.LanguagesRepository
-import com.storozhuk.learningvocabulary.dto.LanguageDto
+import com.storozhuk.learningvocabulary.dto.ui.LanguageDto
 import com.storozhuk.learningvocabulary.ui.language.adapter.LanguagesCustomAdapter
 
 class AddLanguageFragment: Fragment(R.layout.fragment_add_language) {
