@@ -67,7 +67,10 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
             .setOnClickListener { v: View ->
                 if (selectedLanguageId == 1) {
                     showToast(v.context, "Select language")
-                } else {
+                } else if (selectedSubject == null) {
+                    showToast(v.context, "Select subject")
+                }
+                else {
                     showAddWordPopup(v)
                 }
             }
@@ -304,24 +307,7 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
         addWordPopup.findViewById<TextView>(R.id.language_text_value).text =
             languagesRepository.fetchLanguageById(selectedLanguageId).getString(0)
 
-        //Fill in autocomplete suggestion with subjects
-        val subjectsForLanguage = ArrayList<String>()
-        subjectsRepository.fetchForLanguageId(selectedLanguageId)
-            .use { cursor ->
-                while (!cursor.isAfterLast) {
-                    subjectsForLanguage.add(cursor.getString(1))
-                    cursor.moveToNext()
-                }
-            }
-        val subjectsInput =
-            addWordPopup.findViewById<AutoCompleteTextView>(R.id.word_subject_input)
-        val subjectsDataAdapter = ArrayAdapter(
-            requireActivity(), android.R.layout.select_dialog_item,
-            subjectsForLanguage
-        )
-        subjectsInput.threshold = 1
-        subjectsInput.setAdapter(subjectsDataAdapter)
-
+        addWordPopup.findViewById<TextView>(R.id.subject_text_value).text = selectedSubject
     }
 
 
@@ -329,21 +315,10 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
         val original = view.findViewById<EditText>(R.id.word_original_input).text.toString()
         if (original.isNotEmpty()) {
             val translated = view.findViewById<EditText>(R.id.word_translated_input).text.toString()
-            val subject = view.findViewById<EditText>(R.id.word_subject_input).text.toString()
-            selectedSubject = subject
-            var cursor = subjectsRepository.fetchForSubjectAndLanguageId(
+            val cursor = subjectsRepository.fetchForSubjectAndLanguageId(
                 selectedSubject!!,
                 selectedLanguageId
             )
-            // Create subject if not present in DB
-            if (cursor.isAfterLast) {
-                val subjectDto = SubjectDto(null, subject, selectedLanguageId)
-                subjectsRepository.insert(subjectDto)
-                cursor = subjectsRepository.fetchForSubjectAndLanguageId(
-                    selectedSubject!!,
-                    selectedLanguageId
-                )
-            }
             // Save word
             if (!cursor.isAfterLast) {
                 val wordDto = WordDataDto(null, original, translated, cursor.getInt(0))
