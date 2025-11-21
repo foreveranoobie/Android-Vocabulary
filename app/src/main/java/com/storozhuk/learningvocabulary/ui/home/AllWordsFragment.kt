@@ -69,8 +69,7 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
                     showToast(v.context, "Select language")
                 } else if (selectedSubject == null) {
                     showToast(v.context, "Select subject")
-                }
-                else {
+                } else {
                     showAddWordPopup(v)
                 }
             }
@@ -335,15 +334,22 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
                 popupView.findViewById<EditText>(R.id.word_translated_input_edit).text.toString()
             val subject =
                 popupView.findViewById<EditText>(R.id.word_subject_input_edit).text.toString()
-            val cursor = subjectsRepository.fetchForSubjectAndLanguageId(
-                selectedSubject!!,
-                selectedLanguageId
-            )
-            if (!cursor.isAfterLast) {
-                val wordDataDto = WordDataDto(selectedEditId, original, translated, cursor.getInt(0))
-                if (wordsRepository.update(wordDataDto) >= 0) {
-                    selectedSubject = subject
-                    updateSubjects()
+            if (subject.isEmpty()) {
+                showToast(popupView.context, "Write the name of subject")
+            } else {
+                val cursor = subjectsRepository.fetchForSubjectAndLanguageId(
+                    subject,
+                    selectedLanguageId
+                )
+                if (!cursor.isAfterLast) {
+                    val wordDataDto =
+                        WordDataDto(selectedEditId, original, translated, cursor.getInt(0))
+                    if (wordsRepository.update(wordDataDto) >= 0) {
+                        selectedSubject = subject
+                        updateSubjects()
+                    }
+                } else {
+                    showToast(popupView.context, "Subject does not exist")
                 }
             }
         }
