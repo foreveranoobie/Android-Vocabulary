@@ -12,6 +12,7 @@ import com.storozhuk.learningvocabulary.ui.home.AllWordsFragment
 import com.storozhuk.learningvocabulary.ui.language.AddLanguageFragment
 import com.storozhuk.learningvocabulary.util.ViewMatcher.withRecyclerViewContainingText
 import com.storozhuk.learningvocabulary.util.ViewMatcher.withSpinnerContainingText
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,19 +28,23 @@ class AllWordsFragmentEtETest {
     @get:Rule
     var activityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
 
+    @Before
+    fun init(){
+        //Launch the fragment
+        FragmentScenario.launchInContainer(AddLanguageFragment::class.java)
+    }
+
     @Test
     fun shouldAddLanguages_whenUsingAddLanguageFragment_givenLanguages(){
         //given
         val languageFirst = "Polish"
         val languageSecond = "English"
-        //Launch the fragment
-        FragmentScenario.launchInContainer(AddLanguageFragment::class.java)
 
         //when
-        onView(withId(R.id.new_subject_field)).perform(typeText(languageFirst))
-        onView(withId(R.id.add_subject_btn)).perform(click())
-        onView(withId(R.id.new_subject_field)).perform(typeText(languageSecond))
-        onView(withId(R.id.add_subject_btn)).perform(click())
+        onView(withId(R.id.new_language_field)).perform(typeText(languageFirst))
+        onView(withId(R.id.add_language_btn)).perform(click())
+        onView(withId(R.id.new_language_field)).perform(typeText(languageSecond))
+        onView(withId(R.id.add_language_btn)).perform(click())
 
         //then
         onView(withId(R.id.languages)).check(ViewAssertions.matches(withRecyclerViewContainingText(languageFirst)))
@@ -50,16 +55,14 @@ class AllWordsFragmentEtETest {
     fun shouldShowAddedLanguageOnWordsFragment_whenUsingAddLanguageFragment_givenAddedLanguage(){
         //given
         val givenLanguage = "English"
-        //Launch the fragment
-        FragmentScenario.launchInContainer(AddLanguageFragment::class.java)
 
         //when
-        onView(withId(R.id.new_subject_field)).perform(typeText(givenLanguage))
-        onView(withId(R.id.add_subject_btn)).perform(click())
+        onView(withId(R.id.new_language_field)).perform(typeText(givenLanguage))
+        onView(withId(R.id.add_language_btn)).perform(click())
 
         FragmentScenario.launchInContainer(AllWordsFragment::class.java)
 
         //then
-        onView(withId(R.id.subjects_languages_filter)).check(ViewAssertions.matches(withSpinnerContainingText(givenLanguage)));
+        onView(withId(R.id.languages_filter)).check(ViewAssertions.matches(withSpinnerContainingText(givenLanguage)));
     }
 }
