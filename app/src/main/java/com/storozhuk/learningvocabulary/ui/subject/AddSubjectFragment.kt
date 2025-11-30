@@ -6,7 +6,6 @@ import android.widget.AdapterView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,7 +15,6 @@ import com.storozhuk.learningvocabulary.application.VocabularyContext
 import com.storozhuk.learningvocabulary.db.repo.LanguagesRepository
 import com.storozhuk.learningvocabulary.db.repo.SubjectsRepository
 import com.storozhuk.learningvocabulary.dto.data.SubjectDto
-import com.storozhuk.learningvocabulary.dto.ui.LanguageDto
 import com.storozhuk.learningvocabulary.ui.helper.UiHelper
 import com.storozhuk.learningvocabulary.ui.home.helper.AllWordsFragmentHelper
 import com.storozhuk.learningvocabulary.ui.subject.adapter.SubjectsCustomAdapter

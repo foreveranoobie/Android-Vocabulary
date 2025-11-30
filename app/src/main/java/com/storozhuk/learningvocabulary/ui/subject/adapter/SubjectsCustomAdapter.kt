@@ -16,14 +16,15 @@ import com.storozhuk.learningvocabulary.R
 import com.storozhuk.learningvocabulary.db.repo.SubjectsRepository
 import com.storozhuk.learningvocabulary.dto.data.SubjectDto
 import com.storozhuk.learningvocabulary.ui.helper.UiHelper
-import com.storozhuk.learningvocabulary.ui.language.adapter.LanguagesCustomAdapter
 
 class SubjectsCustomAdapter(
     private val dataSet: MutableList<SubjectDto>,
     private val subjectsRepository: SubjectsRepository,
     private val window: Window
-) :
-    RecyclerView.Adapter<LanguagesCustomAdapter.ViewHolder>()  {
+) : RecyclerView.Adapter<SubjectsCustomAdapter.ViewHolder>() {
+    private lateinit var editSubjectPopupView: View
+    private lateinit var editSubjectPopupWindow: PopupWindow
+
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textView: TextView
 
@@ -34,81 +35,71 @@ class SubjectsCustomAdapter(
     }
 
     override fun onCreateViewHolder(
-        viewGroup: ViewGroup,
-        viewType: Int
-    ): LanguagesCustomAdapter.ViewHolder {
+        viewGroup: ViewGroup, viewType: Int
+    ): SubjectsCustomAdapter.ViewHolder {
         val view = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.recycler_view_item, viewGroup, false)
 
-        return LanguagesCustomAdapter.ViewHolder(view)
+        return SubjectsCustomAdapter.ViewHolder(view)
     }
 
     override fun getItemCount(): Int {
         return dataSet.size
     }
 
-    override fun onBindViewHolder(viewHolder: LanguagesCustomAdapter.ViewHolder, position: Int) {
-        if(position == 0){
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        if (position == 0) {
             viewHolder.itemView.setPadding(0, 0, 0, 2);
-        } else if(position == dataSet.size - 1){
+        } else if (position == dataSet.size - 1) {
             viewHolder.itemView.setPadding(0, 2, 0, 0);
         }
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         viewHolder.textView.text = dataSet[position].subject
         viewHolder.textView.setOnClickListener {
+            if (!this::editSubjectPopupView.isInitialized) {
+                initEditSubjectPopup(viewHolder)
+            }
             showEditSubjectPopup(
-                viewHolder,
-                dataSet[position],
-                position
+                viewHolder, dataSet[position], position
             )
         }
     }
 
     private fun showEditSubjectPopup(
-        viewHolder: LanguagesCustomAdapter.ViewHolder,
-        subjectDto: SubjectDto,
-        subjectPosition: Int
+        viewHolder: ViewHolder, subjectDto: SubjectDto, subjectPosition: Int
     ): Boolean {
-        val inflater = LayoutInflater.from(viewHolder.itemView.context)
-        val editSubjectPopup = inflater.inflate(R.layout.edit_subject_popup, null)
-
-        val width = LinearLayout.LayoutParams.WRAP_CONTENT
-        val height = LinearLayout.LayoutParams.WRAP_CONTENT
-        val focusable = true // lets taps outside the popup also dismiss it
-        val popupWindow = PopupWindow(editSubjectPopup, width, height, focusable)
-        popupWindow.showAtLocation(viewHolder.itemView, Gravity.CENTER, 0, 0)
-        popupWindow.setOnDismissListener {
-            UiHelper.dimBackground(window, 0f) // Remove dim when dismissed
-        }
+        editSubjectPopupWindow.showAtLocation(viewHolder.itemView, Gravity.CENTER, 0, 0)
 
         UiHelper.dimBackground(window, 0.5f) // Add background dim
 
-        val subjectNameTxt = editSubjectPopup.findViewById<TextView>(R.id.subject_name_txt)
-        editSubjectPopup.findViewById<EditText>(R.id.edit_subject_input).setText(subjectDto.subject)
+        val subjectNameTxt = editSubjectPopupView.findViewById<TextView>(R.id.subject_name_txt)
+        editSubjectPopupView.findViewById<EditText>(R.id.edit_subject_input)
+            .setText(subjectDto.subject)
         subjectNameTxt.text = subjectDto.subject
 
-        editSubjectPopup.findViewById<ImageButton>(R.id.close_edit_subject_popup).setOnClickListener {
-            popupWindow.dismiss()
-        }
+        editSubjectPopupView.findViewById<ImageButton>(R.id.close_edit_subject_popup)
+            .setOnClickListener {
+                editSubjectPopupWindow.dismiss()
+            }
 
-        editSubjectPopup.findViewById<Button>(R.id.edit_subject_btn).setOnClickListener {
+        editSubjectPopupView.findViewById<Button>(R.id.edit_subject_btn).setOnClickListener {
 
-            val newSubjectDto = updateSubject(editSubjectPopup, subjectDto)
+            val newSubjectDto = updateSubject(editSubjectPopupView, subjectDto)
             if (newSubjectDto != null) {
                 dataSet[subjectPosition] = newSubjectDto
                 subjectNameTxt.text = newSubjectDto.subject
                 notifyItemChanged(subjectPosition)
             }
-            popupWindow.dismiss()
+            editSubjectPopupWindow.dismiss()
         }
 
-        editSubjectPopup.findViewById<Button>(R.id.remove_subject_btn).setOnClickListener {
+        editSubjectPopupView.findViewById<Button>(R.id.remove_subject_btn).setOnClickListener {
             if (deleteLanguage(dataSet[subjectPosition].id!!) == 1) {
                 dataSet.removeAt(subjectPosition)
                 notifyItemRemoved(subjectPosition)
                 notifyItemRangeChanged(subjectPosition, dataSet.size)
-                popupWindow.dismiss()
+                editSubjectPopupWindow.dismiss()
             }
         }
 
@@ -127,5 +118,25 @@ class SubjectsCustomAdapter(
             return updateSubjectDto
         }
         return null
+    }
+
+    private fun initEditSubjectPopup(viewHolder: ViewHolder) {
+        val inflater = LayoutInflater.from(viewHolder.itemView.context)
+        editSubjectPopupView = inflater.inflate(R.layout.edit_subject_popup, null)
+
+        editSubjectPopupWindow = PopupWindow(
+            editSubjectPopupView,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            true
+        )
+        editSubjectPopupWindow.setOnDismissListener {
+            UiHelper.dimBackground(window, 0f) // Remove dim when dismissed
+        }
+
+        editSubjectPopupView.findViewById<ImageButton>(R.id.close_edit_subject_popup)
+            .setOnClickListener {
+                editSubjectPopupWindow.dismiss()
+            }
     }
 }

@@ -3,10 +3,13 @@ package com.storozhuk.learningvocabulary.ui.helper
 import android.content.Context
 import android.database.Cursor
 import android.view.Window
+import android.widget.EditText
 import android.widget.Toast
 
 class UiHelper {
     companion object {
+        private val EMPTY_STRING = ""
+
         @JvmStatic
         fun dimBackground(activityWindow: Window, dimAmount: Float) {
             val layoutParams = activityWindow.attributes
@@ -32,6 +35,11 @@ class UiHelper {
                 data.moveToNext()
             }
             return false;
+        }
+
+        @JvmStatic
+        fun clearEditText(editText: EditText){
+            editText.setText(EMPTY_STRING)
         }
     }
 }

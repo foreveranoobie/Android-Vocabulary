@@ -23,6 +23,8 @@ class LanguagesCustomAdapter(
     private val window: Window
 ) :
     RecyclerView.Adapter<LanguagesCustomAdapter.ViewHolder>() {
+    private lateinit var editLanguagePopupView: View
+    private lateinit var editLanguagePopupWindow: PopupWindow
 
     /**
      * Provide a reference to the type of views that you are using
@@ -49,15 +51,18 @@ class LanguagesCustomAdapter(
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
-        if(position == 0){
+        if (position == 0) {
             viewHolder.itemView.setPadding(0, 0, 0, 2);
-        } else if(position == dataSet.size - 1){
+        } else if (position == dataSet.size - 1) {
             viewHolder.itemView.setPadding(0, 2, 0, 0);
         }
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         viewHolder.textView.text = dataSet[position]
         viewHolder.textView.setOnClickListener {
+            if (!this::editLanguagePopupView.isInitialized) {
+                initEditLanguagePopup(viewHolder)
+            }
             showEditLanguagePopup(
                 viewHolder,
                 dataSet[position], position
@@ -74,44 +79,34 @@ class LanguagesCustomAdapter(
         langValue: String,
         langPosition: Int
     ): Boolean {
-        val inflater = LayoutInflater.from(viewHolder.itemView.context)
-        val editLanguagePopup = inflater.inflate(R.layout.edit_language_popup, null)
-
-        val width = LinearLayout.LayoutParams.WRAP_CONTENT
-        val height = LinearLayout.LayoutParams.WRAP_CONTENT
-        val focusable = true // lets taps outside the popup also dismiss it
-        val popupWindow = PopupWindow(editLanguagePopup, width, height, focusable)
-        popupWindow.showAtLocation(viewHolder.itemView, Gravity.CENTER, 0, 0)
-        popupWindow.setOnDismissListener {
-            UiHelper.dimBackground(window, 0f) // Remove dim when dismissed
-        }
-
+        editLanguagePopupWindow.showAtLocation(viewHolder.itemView, Gravity.CENTER, 0, 0)
         UiHelper.dimBackground(window, 0.5f) // Add background dim
 
-        val languageNameTxt = editLanguagePopup.findViewById<TextView>(R.id.language_name_txt)
-        editLanguagePopup.findViewById<EditText>(R.id.edit_language_input).setText(langValue)
+        val languageNameTxt = editLanguagePopupView.findViewById<TextView>(R.id.language_name_txt)
+        editLanguagePopupView.findViewById<EditText>(R.id.edit_language_input).setText(langValue)
         languageNameTxt.text = langValue
 
-        editLanguagePopup.findViewById<ImageButton>(R.id.close_edit_lang_popup).setOnClickListener {
-            popupWindow.dismiss()
-        }
+        editLanguagePopupView.findViewById<ImageButton>(R.id.close_edit_lang_popup)
+            .setOnClickListener {
+                editLanguagePopupWindow.dismiss()
+            }
 
-        editLanguagePopup.findViewById<Button>(R.id.edit_lang_btn).setOnClickListener {
-            val languageDto = updateLanguage(editLanguagePopup)
+        editLanguagePopupView.findViewById<Button>(R.id.edit_lang_btn).setOnClickListener {
+            val languageDto = updateLanguage(editLanguagePopupView)
             if (languageDto != null) {
                 dataSet[langPosition] = languageDto.language
                 languageNameTxt.text = languageDto.language
                 notifyItemChanged(langPosition)
             }
-            popupWindow.dismiss()
+            editLanguagePopupWindow.dismiss()
         }
 
-        editLanguagePopup.findViewById<Button>(R.id.remove_lang_btn).setOnClickListener {
+        editLanguagePopupView.findViewById<Button>(R.id.remove_lang_btn).setOnClickListener {
             if (deleteLanguage(dataSet[langPosition]) == 1) {
                 dataSet.removeAt(langPosition)
                 notifyItemRemoved(langPosition)
                 notifyItemRangeChanged(langPosition, dataSet.size)
-                popupWindow.dismiss()
+                editLanguagePopupWindow.dismiss()
             }
         }
 
@@ -133,5 +128,25 @@ class LanguagesCustomAdapter(
             return languageDto
         }
         return null
+    }
+
+    private fun initEditLanguagePopup(viewHolder: ViewHolder) {
+        val inflater = LayoutInflater.from(viewHolder.itemView.context)
+        editLanguagePopupView = inflater.inflate(R.layout.edit_language_popup, null)
+
+        editLanguagePopupWindow = PopupWindow(
+            editLanguagePopupView,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            true
+        )
+        editLanguagePopupWindow.setOnDismissListener {
+            UiHelper.dimBackground(window, 0f) // Remove dim when dismissed
+        }
+
+        editLanguagePopupView.findViewById<ImageButton>(R.id.close_edit_lang_popup)
+            .setOnClickListener {
+                editLanguagePopupWindow.dismiss()
+            }
     }
 }
