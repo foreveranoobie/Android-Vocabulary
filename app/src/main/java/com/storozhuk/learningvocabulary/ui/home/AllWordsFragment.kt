@@ -228,13 +228,13 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
      * Shows popup to word edit and removal
      */
     private fun showEditWordPopup(wordIndex: Int): Boolean {
+
         if (!this::editWordPopupView.isInitialized) {
             initEditWordPopup()
         }
         val wordDto = wordsList[wordIndex]
         val originalText = wordDto.original
         val translatedText = wordDto.translate
-        val subjectText = wordDto.subject
 
         selectedEditId = wordsRepository.findIdByOriginal(originalText)
         editWordPopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
@@ -245,7 +245,33 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
             .setText(originalText)
         editWordPopupView.findViewById<EditText>(R.id.word_translated_input_edit)
             .setText(translatedText)
-        editWordPopupView.findViewById<EditText>(R.id.word_subject_input_edit).setText(subjectText)
+
+        val subjectsFilter = editWordPopupView.findViewById<Spinner>(R.id.word_subject_filter)
+
+        if (selectedLanguageId == 1) {
+            val subjectId = wordsRepository.fetchByOriginal(originalText).getInt(3)
+
+            val cursor = subjectsRepository.fetchForSubjectId(subjectId)
+            val subjectOriginal = cursor.getString(1)
+            val languageId = cursor.getInt(2)
+            selectedLanguageId = languageId
+            selectedSubject = subjectOriginal
+        }
+
+        val subjects = subjectsRepository.fetchForLanguageId(selectedLanguageId).use { cursor ->
+            extractElementsFromCursorToArrayList(cursor,
+                { ArrayList() },
+                { cursor.getString(1) })
+        }
+
+        subjectsFilter.adapter = createDefaultDropdownDataAdapter(requireActivity(), subjects)
+
+
+        subjectsFilter.setSelection(
+            AllWordsFragmentHelper.getPositionOfTextInSpinner(
+                selectedSubject!!, subjectsFilter
+            )
+        )
 
         return true
     }
@@ -287,7 +313,7 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
             val translated =
                 popupView.findViewById<EditText>(R.id.word_translated_input_edit).text.toString()
             val subject =
-                popupView.findViewById<EditText>(R.id.word_subject_input_edit).text.toString()
+                popupView.findViewById<Spinner>(R.id.word_subject_filter).selectedItem.toString()
             if (subject.isEmpty()) {
                 showToast(popupView.context, "Write the name of subject")
             } else {
@@ -300,6 +326,7 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
                     if (wordsRepository.update(wordDataDto) >= 0) {
                         selectedSubject = subject
                         updateSubjects()
+                        setLanguageForLanguageSpinner(selectedLanguageId)
                     }
                 } else {
                     showToast(popupView.context, "Subject does not exist")
@@ -308,15 +335,14 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
         }
     }
 
-    private fun deleteWord(removeWordPopup: View) {
+    private fun deleteSelectedWord(removeWordPopup: View) {
         wordsRepository.delete(selectedEditId)
         val subject =
-            removeWordPopup.findViewById<EditText>(R.id.word_subject_input_edit).text.toString()
-        //Reset subjects index if the word was the last one for the subject
-        val wordsForSubjectAndLanguage =
-            wordsRepository.fetchForLanguageAndSubject(selectedLanguageId, subject)
-        selectedSubject = subject
-        updateSubjects()
+            removeWordPopup.findViewById<Spinner>(R.id.word_subject_filter).selectedItem.toString()
+        if(selectedLanguageId != 1) {
+            selectedSubject = subject
+            updateSubjects()
+        }
     }
 
     private fun cleanTable() {
@@ -377,11 +403,28 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
             editWordPopupWindow.dismiss()
         }
         editWordPopupView.findViewById<Button>(R.id.delete_word_btn).setOnClickListener {
-            deleteWord(editWordPopupView)
+            deleteSelectedWord(editWordPopupView)
             editWordPopupWindow.dismiss()
         }
         editWordPopupView.findViewById<ImageButton>(R.id.close_window_btn_edit).setOnClickListener {
             editWordPopupWindow.dismiss()
         }
+
+        initSubjectsSpinnerInEditWordPopup()
+
+    }
+
+    private fun initSubjectsSpinnerInEditWordPopup() {
+        val subjectsFilter = editWordPopupView.findViewById<Spinner>(R.id.word_subject_filter)
+
+        subjectsFilter.isEnabled = true
+        subjectsFilter.isVisible = true
+    }
+
+    private fun setLanguageForLanguageSpinner(languageId: Int){
+        val languages = requireActivity().findViewById<Spinner>(R.id.languages_filter)
+        val language = languagesRepository.fetchLanguageById(languageId).getString(0)
+        val position = AllWordsFragmentHelper.getPositionOfTextInSpinner(language, languages)
+        languages.setSelection(position)
     }
 }

@@ -10,6 +10,7 @@ import com.storozhuk.learningvocabulary.dto.ui.WordDto
 class WordsRepository(private val database: SQLiteDatabase, private val dbHelper: DatabaseHelper) {
 
     private val WHERE_ID_EQUALS = "${dbHelper.WORDS_ID_COLUMN}=?"
+    private val WHERE_ORIGINAL_EQUALS = "${dbHelper.WORDS_ORIGINAL_COLUMN}=?"
 
     fun insert(wordDto: WordDataDto): Long{
         val contentValues = ContentValues()
@@ -34,6 +35,14 @@ class WordsRepository(private val database: SQLiteDatabase, private val dbHelper
         val cursor = database.query(dbHelper.WORDS_TABLE_NAME, arrayOf(dbHelper.WORDS_ID_COLUMN, dbHelper.WORDS_ORIGINAL_COLUMN,
             dbHelper.WORDS_TRANSLATE_COLUMN, dbHelper.WORDS_SUBJECT_ID_COLUMN), WHERE_ID_EQUALS,
             arrayOf(id.toString()), null, null, null)
+        cursor.moveToFirst()
+        return cursor
+    }
+
+    fun fetchByOriginal(original: String): Cursor{
+        val cursor = database.query(dbHelper.WORDS_TABLE_NAME, arrayOf(dbHelper.WORDS_ID_COLUMN, dbHelper.WORDS_ORIGINAL_COLUMN,
+            dbHelper.WORDS_TRANSLATE_COLUMN, dbHelper.WORDS_SUBJECT_ID_COLUMN), WHERE_ORIGINAL_EQUALS,
+            arrayOf(original), null, null, null)
         cursor.moveToFirst()
         return cursor
     }

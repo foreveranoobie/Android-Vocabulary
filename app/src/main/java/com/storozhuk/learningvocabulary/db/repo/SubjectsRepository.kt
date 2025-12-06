@@ -18,6 +18,8 @@ class SubjectsRepository(
     private val WHERE_SUBJECT_AND_LANGUAGE_ID = "${dbHelper.SUBJECTS_SUBJECT_COLUMN}=? " +
             "AND ${dbHelper.SUBJECTS_LANGUAGE_ID_COLUMN}=?"
 
+    private val WHERE_SUBJECT_ID = "${dbHelper.SUBJECTS_ID_COLUMN}=?"
+
     fun insert(subjectDto: SubjectDto) {
         val contentValues = ContentValues()
         contentValues.put(dbHelper.SUBJECTS_SUBJECT_COLUMN, subjectDto.subject)
@@ -44,6 +46,18 @@ class SubjectsRepository(
         cursor.moveToFirst()
         return cursor
     }
+
+    fun fetchForSubjectId(subjectId: Int): Cursor {
+        val columns = arrayOf(dbHelper.SUBJECTS_ID_COLUMN, dbHelper.SUBJECTS_SUBJECT_COLUMN,
+            dbHelper.SUBJECTS_LANGUAGE_ID_COLUMN)
+        val cursor = database.query(
+            dbHelper.SUBJECTS_TABLE_NAME, columns, WHERE_SUBJECT_ID,
+            arrayOf(subjectId.toString()), null, null, null
+        )
+        cursor.moveToFirst()
+        return cursor
+    }
+
 
     fun update(subjectDto: SubjectDto): Int {
         val contentValues = ContentValues()
