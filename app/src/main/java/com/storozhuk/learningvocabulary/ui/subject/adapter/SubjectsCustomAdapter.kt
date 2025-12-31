@@ -16,6 +16,7 @@ import com.storozhuk.learningvocabulary.R
 import com.storozhuk.learningvocabulary.db.repo.SubjectsRepository
 import com.storozhuk.learningvocabulary.dto.data.SubjectDto
 import com.storozhuk.learningvocabulary.ui.helper.UiHelper
+import com.storozhuk.learningvocabulary.ui.helper.UiHelper.Companion.showToast
 
 class SubjectsCustomAdapter(
     private val dataSet: MutableList<SubjectDto>,
@@ -102,7 +103,6 @@ class SubjectsCustomAdapter(
                 editSubjectPopupWindow.dismiss()
             }
         }
-
         return true
     }
 
@@ -113,9 +113,23 @@ class SubjectsCustomAdapter(
     private fun updateSubject(layoutView: View, subject: SubjectDto): SubjectDto? {
         val subjectValue =
             layoutView.findViewById<EditText>(R.id.edit_subject_input).text.toString()
-        val updateSubjectDto = SubjectDto(subject.id, subjectValue, subject.languageId)
-        if (subjectsRepository.update(updateSubjectDto) == 1) {
-            return updateSubjectDto
+        if (subjectValue.trim().isNotEmpty()) {
+
+            if (subjectsRepository.fetchForSubjectAndLanguageId(
+                    subjectValue,
+                    subject.languageId
+                ).count == 0
+            ) {
+
+                val updateSubjectDto = SubjectDto(subject.id, subjectValue, subject.languageId)
+                if (subjectsRepository.update(updateSubjectDto) == 1) {
+                    return updateSubjectDto
+                }
+            } else {
+                showToast(window.context, "Subject already exists for this language")
+            }
+        } else {
+            showToast(window.context, "Subject name is empty")
         }
         return null
     }

@@ -56,10 +56,14 @@ class LanguagesRepository(private val database: SQLiteDatabase, private val dbHe
             arrayOf(dbHelper.LANGUAGES_ID_COLUMN)
         val cursor =
             database.query(dbHelper.LANGUAGES_TABLE_NAME, columns, "${dbHelper.LANGUAGES_LANGUAGE_COLUMN}='${language}'", null, null, null, null);
-        cursor?.moveToFirst()
-        val id = cursor.getInt(0)
-        cursor.close()
-        return id
+        return if (cursor?.moveToFirst() == true) {
+            val id = cursor.getInt(0)
+            cursor.close()
+            id
+        } else {
+            cursor.close()
+            -1
+        }
     }
 
     fun cleanTable(){

@@ -65,7 +65,6 @@ class AllWordsFragmentHelper {
         fun getPositionOfTextInSpinner(text: String, spinner: Spinner): Int {
             for (i in 0 until spinner.count) {
                 if (spinner.getItemAtPosition(i).toString() == text) {
-                    System.err.printf("Text %s is at position %d", text, i)
                     return i
                 }
             }

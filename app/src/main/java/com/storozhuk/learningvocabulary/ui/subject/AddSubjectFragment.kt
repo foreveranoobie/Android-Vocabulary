@@ -27,8 +27,8 @@ class AddSubjectFragment : Fragment(R.layout.fragment_add_subject) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        this.languagesRepository = (activity?.application as VocabularyContext).languagesRepository
-        this.subjectsRepository = (activity?.application as VocabularyContext).subjectsRepository
+        this.languagesRepository = (activity?.application as VocabularyContext).getLanguagesRepository()
+        this.subjectsRepository = (activity?.application as VocabularyContext).getSubjectsRepository()
         fragmentView = view
         fragmentView.findViewById<Button>(R.id.add_subject_btn).setOnClickListener { addSubject() }
         initLanguagesSpinner()

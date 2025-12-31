@@ -16,6 +16,7 @@ import com.storozhuk.learningvocabulary.R
 import com.storozhuk.learningvocabulary.db.repo.LanguagesRepository
 import com.storozhuk.learningvocabulary.dto.ui.LanguageDto
 import com.storozhuk.learningvocabulary.ui.helper.UiHelper
+import com.storozhuk.learningvocabulary.ui.helper.UiHelper.Companion.showToast
 
 class LanguagesCustomAdapter(
     private val dataSet: MutableList<String>,
@@ -124,8 +125,12 @@ class LanguagesCustomAdapter(
         val languageId =
             languagesRepository.fetchId(layoutView.findViewById<TextView>(R.id.language_name_txt).text.toString())
         val languageDto = LanguageDto(languageId, languageValue)
-        if (languagesRepository.update(languageDto) == 1) {
-            return languageDto
+        if (languageValue.trim().isNotEmpty()) {
+            if (languagesRepository.update(languageDto) == 1) {
+                return languageDto
+            }
+        } else {
+            showToast(window.context, "Language should not be empty")
         }
         return null
     }

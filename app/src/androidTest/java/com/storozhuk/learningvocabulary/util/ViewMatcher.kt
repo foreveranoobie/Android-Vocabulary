@@ -27,7 +27,7 @@ object ViewMatcher {
             }
 
         }
-    };
+    }
 
     fun withRecyclerViewContainingText(text: String): BoundedMatcher<View?, RecyclerView> {
         return object : BoundedMatcher<View?, RecyclerView>(RecyclerView::class.java) {

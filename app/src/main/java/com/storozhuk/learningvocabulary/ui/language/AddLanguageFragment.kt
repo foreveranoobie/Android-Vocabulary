@@ -19,7 +19,7 @@ class AddLanguageFragment: Fragment(R.layout.fragment_add_language) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        this.languagesRepository = (activity?.application as VocabularyContext).languagesRepository
+        this.languagesRepository = (activity?.application as VocabularyContext).getLanguagesRepository()
         fragmentView = view
         fragmentView.findViewById<Button>(R.id.add_language_btn).setOnClickListener { addLanguage() }
         initLanguagesList()

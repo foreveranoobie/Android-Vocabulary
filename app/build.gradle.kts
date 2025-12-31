@@ -14,7 +14,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.storozhuk.learningvocabulary.app.TestRunner"
         signingConfig = signingConfigs.getByName("debug")
     }
 
@@ -47,13 +47,14 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation("androidx.cardview:cardview:1.0.0")
+    implementation("org.xerial:sqlite-jdbc:3.49.1.0")
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
     testImplementation(libs.gtruth)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.navigation.testing)
+    androidTestImplementation(libs.mybatis)
     debugImplementation(libs.androidx.fragment.testing)
     debugImplementation(libs.androidx.fragment.testing.manifest)
 

@@ -4,7 +4,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "vocabulary", null, DB_VERSION) {
+open class DatabaseHelper : SQLiteOpenHelper {
     val WORDS_TABLE_NAME = "words"
     val WORDS_ID_COLUMN = "id"
     val WORDS_ORIGINAL_COLUMN = "original"
@@ -25,6 +25,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "vocabulary",
         ON l.id = w.language_id
         WHERE w.id = %d
     """.trimMargin()
+
+    constructor(context: Context?) : super(context, "vocabulary", null, DB_VERSION)
+
+    constructor(context: Context?, dbName: String?) : super(context, dbName, null, DB_VERSION)
 
     companion object {
         private const val DB_VERSION = 3
@@ -62,7 +66,6 @@ CONSTRAINT FK_LANGUAGE FOREIGN KEY (language_id) REFERENCES languages(id) ON DEL
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
-        System.err.println("DatabaseHelper: onCreate")
         db?.execSQL(CREATE_TABLE_LANGUAGES)
         db?.execSQL(CREATE_TABLE_SUBJECTS)
         db?.execSQL(CREATE_TABLE_WORDS)
@@ -70,7 +73,6 @@ CONSTRAINT FK_LANGUAGE FOREIGN KEY (language_id) REFERENCES languages(id) ON DEL
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        System.err.println("DatabaseHelper: onUpgrade")
         db?.execSQL("DROP TABLE IF EXISTS $WORDS_TABLE_NAME")
         db?.execSQL("DROP TABLE IF EXISTS $SUBJECTS_TABLE_NAME")
         db?.execSQL("DROP TABLE IF EXISTS $LANGUAGES_TABLE_NAME")
