@@ -14,12 +14,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.storozhuk.learningvocabulary.R
 import com.storozhuk.learningvocabulary.db.repo.SubjectsRepository
-import com.storozhuk.learningvocabulary.dto.data.SubjectDto
+import com.storozhuk.learningvocabulary.dto.data.SubjectDataDto
 import com.storozhuk.learningvocabulary.ui.helper.UiHelper
 import com.storozhuk.learningvocabulary.ui.helper.UiHelper.Companion.showToast
 
 class SubjectsCustomAdapter(
-    private val dataSet: MutableList<SubjectDto>,
+    private val dataSet: MutableList<SubjectDataDto>,
     private val subjectsRepository: SubjectsRepository,
     private val window: Window
 ) : RecyclerView.Adapter<SubjectsCustomAdapter.ViewHolder>() {
@@ -68,7 +68,7 @@ class SubjectsCustomAdapter(
     }
 
     private fun showEditSubjectPopup(
-        viewHolder: ViewHolder, subjectDto: SubjectDto, subjectPosition: Int
+        viewHolder: ViewHolder, subjectDataDto: SubjectDataDto, subjectPosition: Int
     ): Boolean {
         editSubjectPopupWindow.showAtLocation(viewHolder.itemView, Gravity.CENTER, 0, 0)
 
@@ -76,8 +76,8 @@ class SubjectsCustomAdapter(
 
         val subjectNameTxt = editSubjectPopupView.findViewById<TextView>(R.id.subject_name_txt)
         editSubjectPopupView.findViewById<EditText>(R.id.edit_subject_input)
-            .setText(subjectDto.subject)
-        subjectNameTxt.text = subjectDto.subject
+            .setText(subjectDataDto.subject)
+        subjectNameTxt.text = subjectDataDto.subject
 
         editSubjectPopupView.findViewById<ImageButton>(R.id.close_edit_subject_popup)
             .setOnClickListener {
@@ -86,7 +86,7 @@ class SubjectsCustomAdapter(
 
         editSubjectPopupView.findViewById<Button>(R.id.edit_subject_btn).setOnClickListener {
 
-            val newSubjectDto = updateSubject(editSubjectPopupView, subjectDto)
+            val newSubjectDto = updateSubject(editSubjectPopupView, subjectDataDto)
             if (newSubjectDto != null) {
                 dataSet[subjectPosition] = newSubjectDto
                 subjectNameTxt.text = newSubjectDto.subject
@@ -110,7 +110,7 @@ class SubjectsCustomAdapter(
         return subjectsRepository.delete(subjectId)
     }
 
-    private fun updateSubject(layoutView: View, subject: SubjectDto): SubjectDto? {
+    private fun updateSubject(layoutView: View, subject: SubjectDataDto): SubjectDataDto? {
         val subjectValue =
             layoutView.findViewById<EditText>(R.id.edit_subject_input).text.toString()
         if (subjectValue.trim().isNotEmpty()) {
@@ -121,9 +121,9 @@ class SubjectsCustomAdapter(
                 ).count == 0
             ) {
 
-                val updateSubjectDto = SubjectDto(subject.id, subjectValue, subject.languageId)
-                if (subjectsRepository.update(updateSubjectDto) == 1) {
-                    return updateSubjectDto
+                val updateSubjectDataDto = SubjectDataDto(subject.id, subjectValue, subject.languageId)
+                if (subjectsRepository.update(updateSubjectDataDto) == 1) {
+                    return updateSubjectDataDto
                 }
             } else {
                 showToast(window.context, "Subject already exists for this language")

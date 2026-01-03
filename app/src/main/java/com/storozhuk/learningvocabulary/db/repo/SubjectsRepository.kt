@@ -4,7 +4,7 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import com.storozhuk.learningvocabulary.db.helper.DatabaseHelper
-import com.storozhuk.learningvocabulary.dto.data.SubjectDto
+import com.storozhuk.learningvocabulary.dto.data.SubjectDataDto
 
 class SubjectsRepository(
     private val database: SQLiteDatabase,
@@ -20,10 +20,10 @@ class SubjectsRepository(
 
     private val WHERE_SUBJECT_ID = "${dbHelper.SUBJECTS_ID_COLUMN}=?"
 
-    fun insert(subjectDto: SubjectDto) {
+    fun insert(subjectDataDto: SubjectDataDto) {
         val contentValues = ContentValues()
-        contentValues.put(dbHelper.SUBJECTS_SUBJECT_COLUMN, subjectDto.subject)
-        contentValues.put(dbHelper.SUBJECTS_LANGUAGE_ID_COLUMN, subjectDto.languageId)
+        contentValues.put(dbHelper.SUBJECTS_SUBJECT_COLUMN, subjectDataDto.subject)
+        contentValues.put(dbHelper.SUBJECTS_LANGUAGE_ID_COLUMN, subjectDataDto.languageId)
         database.insert(dbHelper.SUBJECTS_TABLE_NAME, null, contentValues)
     }
 
@@ -59,13 +59,13 @@ class SubjectsRepository(
     }
 
 
-    fun update(subjectDto: SubjectDto): Int {
+    fun update(subjectDataDto: SubjectDataDto): Int {
         val contentValues = ContentValues()
-        contentValues.put(dbHelper.SUBJECTS_SUBJECT_COLUMN, subjectDto.subject)
-        contentValues.put(dbHelper.SUBJECTS_LANGUAGE_ID_COLUMN, subjectDto.languageId)
+        contentValues.put(dbHelper.SUBJECTS_SUBJECT_COLUMN, subjectDataDto.subject)
+        contentValues.put(dbHelper.SUBJECTS_LANGUAGE_ID_COLUMN, subjectDataDto.languageId)
         return database.update(
             dbHelper.SUBJECTS_TABLE_NAME, contentValues,
-            "${dbHelper.SUBJECTS_ID_COLUMN} = ${subjectDto.id}", null
+            "${dbHelper.SUBJECTS_ID_COLUMN} = ${subjectDataDto.id}", null
         )
     }
 

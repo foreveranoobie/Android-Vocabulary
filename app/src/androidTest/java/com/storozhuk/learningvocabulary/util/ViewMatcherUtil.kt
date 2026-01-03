@@ -27,6 +27,19 @@ class ViewMatcherUtil {
         }
 
         @JvmStatic
+        fun withTableMatchingRowsCount(count: Int): BoundedMatcher<View?, TableLayout> {
+            return object : BoundedMatcher<View?, TableLayout>(TableLayout::class.java) {
+                override fun matchesSafely(item: TableLayout?): Boolean {
+                    return count == item?.childCount
+                }
+
+                override fun describeTo(description: Description?) {
+                    description?.appendText("Table having rows: $count")
+                }
+            }
+        }
+
+        @JvmStatic
         fun withSpinnerContainingText(text: String): BoundedMatcher<View?, AdapterView<*>> {
             return object : BoundedMatcher<View?, AdapterView<*>>(AdapterView::class.java) {
                 override fun describeTo(description: Description) {

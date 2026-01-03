@@ -312,10 +312,16 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
             val cursor = subjectsRepository.fetchForSubjectAndLanguageId(
                 selectedSubject!!, selectedLanguageId
             )
-            // Save word
-            if (!cursor.isAfterLast) {
-                val wordDto = WordDataDto(null, original, translated, cursor.getInt(0))
-                wordsRepository.insert(wordDto)
+            val subjectId = cursor.getInt(0)
+            cursor.close()
+            if (wordsRepository.existsOriginalWithSubjectId(original, subjectId)) {
+                showToast(view.context, "Word $original already exists in subject $selectedSubject")
+            } else {
+                // Save word
+                if (!cursor.isAfterLast) {
+                    val wordDto = WordDataDto(null, original, translated, subjectId)
+                    wordsRepository.insert(wordDto)
+                }
             }
         }
     }
@@ -326,21 +332,26 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
         if (original.isNotEmpty()) {
             val translated =
                 popupView.findViewById<EditText>(R.id.word_translated_input_edit).text.toString()
-            val subject =
+            val selectedSubject =
                 popupView.findViewById<Spinner>(R.id.word_subject_filter).selectedItem.toString()
-            if (subject.isEmpty()) {
+            if (selectedSubject.isEmpty()) {
                 showToast(popupView.context, "Write the name of subject")
             } else {
                 val selectedLanguageId = getLanguageIdFromSelectedInSpinner()
                 val cursor = subjectsRepository.fetchForSubjectAndLanguageId(
-                    subject, selectedLanguageId
+                    selectedSubject, selectedLanguageId
                 )
-                if (!cursor.isAfterLast) {
-                    val wordDataDto =
-                        WordDataDto(selectedEditId, original, translated, cursor.getInt(0))
-                    wordsRepository.update(wordDataDto)
+                val subjectId = cursor.getInt(0)
+                cursor.close()
+                if (wordsRepository.existsOriginalWithSubjectId(original, subjectId)) {
+                    showToast(
+                        popupView.context,
+                        "Word $original already exists in subject $selectedSubject"
+                    )
                 } else {
-                    showToast(popupView.context, "Subject does not exist")
+                    val wordDataDto =
+                        WordDataDto(selectedEditId, original, translated, subjectId)
+                    wordsRepository.update(wordDataDto)
                 }
             }
         }

@@ -31,26 +31,23 @@ open class DatabaseHelper : SQLiteOpenHelper {
     constructor(context: Context?, dbName: String?) : super(context, dbName, null, DB_VERSION)
 
     companion object {
-        private const val DB_VERSION = 3
+        private const val DB_VERSION = 4
 
-        private const val CREATE_TABLE_WORDS =
-            """CREATE TABLE words(
+        private const val CREATE_TABLE_WORDS = """CREATE TABLE words(
 id INTEGER PRIMARY KEY AUTOINCREMENT, 
 original TEXT NOT NULL, 
 translate TEXT, 
 subject_id INTEGER NOT NULL,
 CONSTRAINT FK_SUBJECT FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE,
-CONSTRAINT UC_ORIGINAL UNIQUE (original)
+CONSTRAINT UC_ORIGINAL UNIQUE (original, subject_id)
 );"""
 
-        private const val CREATE_TABLE_LANGUAGES =
-            """CREATE TABLE languages(
+        private const val CREATE_TABLE_LANGUAGES = """CREATE TABLE languages(
 id INTEGER PRIMARY KEY AUTOINCREMENT, 
 language TEXT NOT NULL UNIQUE
 );"""
 
-        private const val CREATE_TABLE_SUBJECTS =
-            """CREATE TABLE subjects(
+        private const val CREATE_TABLE_SUBJECTS = """CREATE TABLE subjects(
 id INTEGER PRIMARY KEY AUTOINCREMENT,
 subject TEXT NOT NULL,
 language_id INTEGER NOT NULL,
@@ -73,9 +70,7 @@ CONSTRAINT FK_LANGUAGE FOREIGN KEY (language_id) REFERENCES languages(id) ON DEL
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        db?.execSQL("DROP TABLE IF EXISTS $WORDS_TABLE_NAME")
-        db?.execSQL("DROP TABLE IF EXISTS $SUBJECTS_TABLE_NAME")
-        db?.execSQL("DROP TABLE IF EXISTS $LANGUAGES_TABLE_NAME")
-        onCreate(db);
+        db?.execSQL("ALTER TABLE $WORDS_TABLE_NAME DROP CONSTRAINT UC_ORIGINAL")
+        db?.execSQL("ALTER TABLE $WORDS_TABLE_NAME ADD CONSTRAINT UC_ORIGINAL UNIQUE (original, subject_id)")
     }
 }

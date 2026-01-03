@@ -3,7 +3,7 @@ package com.storozhuk.learningvocabulary.app
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import com.storozhuk.learningvocabulary.db.helper.DatabaseHelper
-import com.storozhuk.learningvocabulary.dto.data.SubjectDto
+import com.storozhuk.learningvocabulary.dto.data.SubjectDataDto
 import com.storozhuk.learningvocabulary.dto.data.WordDataDto
 import com.storozhuk.learningvocabulary.dto.ui.LanguageDto
 
@@ -20,8 +20,8 @@ class TestDatabaseHelper(context: Context) : DatabaseHelper(context, null) {
         database.execSQL("INSERT INTO languages (id, language) VALUES (${languageDto.id}, '${languageDto.language}')")
     }
 
-    fun insertSubject(subjectDto: SubjectDto){
-        database.execSQL("INSERT INTO subjects (id, subject, language_id) VALUES (${subjectDto.id}, '${subjectDto.subject}', ${subjectDto.languageId})")
+    fun insertSubject(subjectDataDto: SubjectDataDto){
+        database.execSQL("INSERT INTO subjects (id, subject, language_id) VALUES (${subjectDataDto.id}, '${subjectDataDto.subject}', ${subjectDataDto.languageId})")
     }
 
     fun insertWord(wordDataDto: WordDataDto){

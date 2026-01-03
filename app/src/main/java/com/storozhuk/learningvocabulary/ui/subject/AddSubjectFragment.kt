@@ -14,7 +14,7 @@ import com.storozhuk.learningvocabulary.R
 import com.storozhuk.learningvocabulary.application.VocabularyContext
 import com.storozhuk.learningvocabulary.db.repo.LanguagesRepository
 import com.storozhuk.learningvocabulary.db.repo.SubjectsRepository
-import com.storozhuk.learningvocabulary.dto.data.SubjectDto
+import com.storozhuk.learningvocabulary.dto.data.SubjectDataDto
 import com.storozhuk.learningvocabulary.ui.helper.UiHelper
 import com.storozhuk.learningvocabulary.ui.home.helper.AllWordsFragmentHelper
 import com.storozhuk.learningvocabulary.ui.subject.adapter.SubjectsCustomAdapter
@@ -72,8 +72,8 @@ class AddSubjectFragment : Fragment(R.layout.fragment_add_subject) {
                     subject, selectedLanguageId
                 ).count == 0
             ) {
-                val subjectDto = SubjectDto(null, subject, selectedLanguageId)
-                subjectsRepository.insert(subjectDto)
+                val subjectDataDto = SubjectDataDto(null, subject, selectedLanguageId)
+                subjectsRepository.insert(subjectDataDto)
                 newSubjectFieldInput.setText("")
                 updateSubjects()
             }
@@ -86,9 +86,9 @@ class AddSubjectFragment : Fragment(R.layout.fragment_add_subject) {
         if (selectedLanguageId > 1) {
             val subjectsRecyclerView = fragmentView.findViewById<RecyclerView>(R.id.subjects)
             val cursor = subjectsRepository.fetchForLanguageId(selectedLanguageId)
-            val dataset = ArrayList<SubjectDto>()
+            val dataset = ArrayList<SubjectDataDto>()
             while (!cursor.isAfterLast) {
-                dataset.add(SubjectDto(cursor.getInt(0), cursor.getString(1), selectedLanguageId))
+                dataset.add(SubjectDataDto(cursor.getInt(0), cursor.getString(1), selectedLanguageId))
                 cursor.moveToNext()
             }
             val subjectsCustomAdapter =

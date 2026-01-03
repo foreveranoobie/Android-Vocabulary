@@ -15,12 +15,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.storozhuk.learningvocabulary.app.DefaultEtETest
-import com.storozhuk.learningvocabulary.dto.data.SubjectDto
+import com.storozhuk.learningvocabulary.dto.data.SubjectDataDto
 import com.storozhuk.learningvocabulary.dto.data.WordDataDto
 import com.storozhuk.learningvocabulary.dto.ui.LanguageDto
 import com.storozhuk.learningvocabulary.ui.home.AllWordsFragment
 import com.storozhuk.learningvocabulary.util.ViewMatcher.withSpinnerContainingText
 import com.storozhuk.learningvocabulary.util.ViewMatcherUtil.Companion.withTableHavingRow
+import com.storozhuk.learningvocabulary.util.ViewMatcherUtil.Companion.withTableMatchingRowsCount
 import com.storozhuk.learningvocabulary.util.ViewMatcherUtil.Companion.withTableRowHavingValues
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
@@ -179,6 +180,113 @@ class AllWordsFragmentEtETest : DefaultEtETest() {
     }
 
     @Test
+    fun shouldNotUpdateWord_whenAddWord_givenDuplicatedOriginalValue() {
+        //given
+        val original = "orig"
+        val translation = "translation2"
+
+        val originalUpdate = DEFAULT_WORD_ORIGINAL
+
+        insertLanguage(null, DEFAULT_LANGUAGE)
+        insertSubject(null, DEFAULT_SUBJECT, 2)
+        insertWord(null, DEFAULT_WORD_ORIGINAL, DEFAULT_WORD_TRANSLATE, 1)
+        insertWord(null, original, translation, 1)
+        FragmentScenario.launchInContainer(AllWordsFragment::class.java)
+
+        //when
+        onView(withSpinnerContainingText(DEFAULT_LANGUAGE)).perform(click())
+        onView(withText(DEFAULT_LANGUAGE)).perform(click())
+        onView(withSpinnerContainingText(DEFAULT_SUBJECT)).perform(click())
+        onView(withText(DEFAULT_SUBJECT)).perform(click())
+        onView(
+            allOf(
+                withParent(withId(R.id.words_table)),
+                withTableRowHavingValues(original, translation)
+            )
+        ).perform(click())
+
+        onView(withId(R.id.word_original_input_edit)).perform(replaceText(originalUpdate))
+        // Click on the spinner to open dropdown
+        selectSubjectOnEditWordPopup(DEFAULT_SUBJECT)
+        onView(withId(R.id.update_btn)).perform(click())
+
+        //then - verify no values are updated
+        onView(withId(R.id.words_table)).check(
+            matches(
+                allOf(
+                    withTableHavingRow(
+                        original, translation
+                    ), withTableMatchingRowsCount(3)
+                )
+            )
+        )
+        onView(
+            allOf(
+                withParent(withId(R.id.words_table)),
+                withTableHavingRow(originalUpdate, translation)
+            )
+        ).check(
+            doesNotExist()
+        )
+    }
+
+    @Test
+    fun shouldNotMoveWordToAnotherSubject_whenUpdateWord_givenNewSubjectAlreadyHasOriginal() {
+        //given
+        val secondSubject = "subj2"
+
+        val original = "orig2"
+        val translation = "translate2"
+
+        val updateOriginal = DEFAULT_WORD_ORIGINAL
+
+        insertLanguage(null, DEFAULT_LANGUAGE)
+        insertSubject(1, DEFAULT_SUBJECT, 2)
+        insertSubject(2, secondSubject, 2)
+        insertWord(null, DEFAULT_WORD_ORIGINAL, DEFAULT_WORD_TRANSLATE, 1)
+        insertWord(null, original, translation, 2)
+        FragmentScenario.launchInContainer(AllWordsFragment::class.java)
+
+        //when
+        onView(withSpinnerContainingText(DEFAULT_LANGUAGE)).perform(click())
+        onView(withText(DEFAULT_LANGUAGE)).perform(click())
+        selectSubjectOnMainFragment(secondSubject)
+        onView(
+            allOf(
+                withParent(withId(R.id.words_table)),
+                withTableRowHavingValues(original, translation)
+            )
+        ).perform(click())
+        onView(withId(R.id.word_original_input_edit)).perform(replaceText(updateOriginal))
+        // Click on the spinner to open dropdown
+        selectSubjectOnEditWordPopup(DEFAULT_SUBJECT)
+        onView(withId(R.id.update_btn)).perform(click())
+
+        //then - verify no new words on DEFAULT_SUBJECT after update
+        onView(withId(R.id.words_table)).check(
+            matches(
+                allOf(
+                    withTableHavingRow(
+                        original, translation
+                    ), withTableMatchingRowsCount(2)
+                )
+            )
+        )
+        selectSubjectOnMainFragment(DEFAULT_SUBJECT)
+        //verify the word is still in its' old subject
+        onView(withId(R.id.words_table)).check(
+            matches(
+                allOf(
+                    withTableHavingRow(
+                        DEFAULT_WORD_ORIGINAL, DEFAULT_WORD_TRANSLATE
+                    ), withTableMatchingRowsCount(2)
+                )
+            )
+        )
+
+    }
+
+    @Test
     fun shouldDisplayUpdateWordPopup_whenUpdateWord_givenClickOnWord() {
         //given
         val original = DEFAULT_WORD_ORIGINAL
@@ -243,7 +351,7 @@ class AllWordsFragmentEtETest : DefaultEtETest() {
         onView(withId(R.id.word_original_input_edit)).perform(replaceText(updatedOriginal))
         onView(withId(R.id.word_translated_input_edit)).perform(replaceText(updatedTranslation))
         // Click on the spinner to open dropdown
-        selectSubjectOnAddWordPopup(DEFAULT_SUBJECT)
+        selectSubjectOnEditWordPopup(DEFAULT_SUBJECT)
 
         onView(withId(R.id.update_btn)).perform(click())
 
@@ -290,7 +398,7 @@ class AllWordsFragmentEtETest : DefaultEtETest() {
             )
         ).perform(click())
         // Click on the spinner to open dropdown
-        selectSubjectOnAddWordPopup(anotherSubject)
+        selectSubjectOnEditWordPopup(anotherSubject)
 
         onView(withId(R.id.update_btn)).perform(click())
 
@@ -354,19 +462,17 @@ class AllWordsFragmentEtETest : DefaultEtETest() {
     private fun selectSubjectOnMainFragment(subjectName: String) {
         onView(withId(R.id.subjects_filter)).perform(click())
         // Select item by string value
-        onData(allOf(`is`(instanceOf(String::class.java)), `is`(subjectName)))
-            .perform(click())
+        onData(allOf(`is`(instanceOf(String::class.java)), `is`(subjectName))).perform(click())
     }
 
-    private fun selectSubjectOnAddWordPopup(subjectName: String) {
+    private fun selectSubjectOnEditWordPopup(subjectName: String) {
         onView(withId(R.id.word_subject_filter)).perform(click())
         // Select item by string value
-        onData(allOf(`is`(instanceOf(String::class.java)), `is`(subjectName)))
-            .perform(click())
+        onData(allOf(`is`(instanceOf(String::class.java)), `is`(subjectName))).perform(click())
     }
 
     private fun insertSubject(id: Int?, subjectName: String, languageId: Int) {
-        testDbHelper.insertSubject(SubjectDto(id, subjectName, languageId))
+        testDbHelper.insertSubject(SubjectDataDto(id, subjectName, languageId))
     }
 
     private fun insertLanguage(id: Int?, languageName: String) {

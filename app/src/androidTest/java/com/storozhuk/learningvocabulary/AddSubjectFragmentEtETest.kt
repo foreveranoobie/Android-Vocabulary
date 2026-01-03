@@ -1,8 +1,6 @@
 package com.storozhuk.learningvocabulary
 
-import android.view.View
 import androidx.fragment.app.testing.FragmentScenario
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.clearText
@@ -11,18 +9,16 @@ import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.storozhuk.learningvocabulary.app.DefaultEtETest
-import com.storozhuk.learningvocabulary.dto.data.SubjectDto
+import com.storozhuk.learningvocabulary.dto.data.SubjectDataDto
 import com.storozhuk.learningvocabulary.dto.ui.LanguageDto
 import com.storozhuk.learningvocabulary.ui.subject.AddSubjectFragment
 import com.storozhuk.learningvocabulary.util.ViewMatcher
 import com.storozhuk.learningvocabulary.util.ViewMatcherUtil.Companion.withRecyclerViewMatchingSize
-import org.hamcrest.Description
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.`is`
@@ -250,7 +246,7 @@ class AddSubjectFragmentEtETest : DefaultEtETest() {
     }
 
     private fun insertSubject(id: Int?, subjectName: String, languageId: Int) {
-        testDbHelper.insertSubject(SubjectDto(id, subjectName, languageId))
+        testDbHelper.insertSubject(SubjectDataDto(id, subjectName, languageId))
     }
 
     private fun insertLanguage(id: Int?, languageName: String) {
