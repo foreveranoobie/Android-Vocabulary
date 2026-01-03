@@ -16,6 +16,7 @@ robolectric = "4.12"
 gtruth = "1.4.2"
 androidx-navigation-testing = "2.7.7"
 androidx-fragment-testing = "1.8.2"
+mybatis = "3.5.19"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -34,6 +35,7 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "androidx-navigation-testing" }
 androidx-fragment-testing = { group = "androidx.fragment", name = "fragment-testing", version.ref = "androidx-fragment-testing" }
 androidx-fragment-testing-manifest = { group = "androidx.fragment", name = "fragment-testing-manifest", version.ref = "androidx-fragment-testing" }
+mybatis = {group = "org.mybatis", name = "mybatis", version.ref = "mybatis"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
