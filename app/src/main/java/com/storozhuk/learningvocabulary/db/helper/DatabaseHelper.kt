@@ -31,7 +31,7 @@ open class DatabaseHelper : SQLiteOpenHelper {
     constructor(context: Context?, dbName: String?) : super(context, dbName, null, DB_VERSION)
 
     companion object {
-        private const val DB_VERSION = 4
+        private const val DB_VERSION = 5
 
         private const val CREATE_TABLE_WORDS = """CREATE TABLE words(
 id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -70,7 +70,13 @@ CONSTRAINT FK_LANGUAGE FOREIGN KEY (language_id) REFERENCES languages(id) ON DEL
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        db?.execSQL("ALTER TABLE $WORDS_TABLE_NAME DROP CONSTRAINT UC_ORIGINAL")
-        db?.execSQL("ALTER TABLE $WORDS_TABLE_NAME ADD CONSTRAINT UC_ORIGINAL UNIQUE (original, subject_id)")
+        db?.execSQL(
+            "DELETE FROM $WORDS_TABLE_NAME " +
+                    "WHERE rowid NOT IN(" +
+                    "SELECT MIN(rowid) FROM $WORDS_TABLE_NAME GROUP BY $WORDS_ID_COLUMN, $WORDS_SUBJECT_ID_COLUMN" +
+                    ")"
+        )
+        /*db?.execSQL("ALTER TABLE $WORDS_TABLE_NAME DROP CONSTRAINT UC_ORIGINAL")
+        db?.execSQL("ALTER TABLE $WORDS_TABLE_NAME ADD CONSTRAINT UC_ORIGINAL UNIQUE (original, subject_id)")*/
     }
 }

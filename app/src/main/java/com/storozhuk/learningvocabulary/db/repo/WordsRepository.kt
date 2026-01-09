@@ -42,7 +42,7 @@ class WordsRepository(private val database: SQLiteDatabase, private val dbHelper
     }
 
     fun fetchForLanguageAndSubject(languageId: Int, subject: String): Cursor {
-        val query = """SELECT w.id, w.original, w.translate, s.subject FROM words w
+        val query = """SELECT w.id, w.original, w.translate, w.subject_id FROM words w
         INNER JOIN subjects s
         ON w.subject_id = s.id
         WHERE s.language_id=${languageId} AND s.subject='${subject}'
@@ -73,6 +73,22 @@ class WordsRepository(private val database: SQLiteDatabase, private val dbHelper
             "${dbHelper.WORDS_ID_COLUMN} = ${wordDto.id}",
             null
         )
+    }
+
+    fun findById(id: Int): Cursor {
+        val columns = arrayOf(dbHelper.WORDS_ID_COLUMN, dbHelper.WORDS_ORIGINAL_COLUMN, dbHelper.WORDS_TRANSLATE_COLUMN,
+            dbHelper.WORDS_SUBJECT_ID_COLUMN)
+        val cursor = database.query(
+            dbHelper.WORDS_TABLE_NAME,
+            columns,
+            "${dbHelper.WORDS_ID_COLUMN}=${id}",
+            null,
+            null,
+            null,
+            null
+        )
+        cursor.moveToNext()
+        return cursor
     }
 
     fun findIdByOriginal(word: String): Int {
