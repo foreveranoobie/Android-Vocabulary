@@ -25,7 +25,6 @@ import com.storozhuk.learningvocabulary.application.VocabularyContext
 import com.storozhuk.learningvocabulary.db.repo.LanguagesRepository
 import com.storozhuk.learningvocabulary.db.repo.SubjectsRepository
 import com.storozhuk.learningvocabulary.db.repo.WordsRepository
-import com.storozhuk.learningvocabulary.dto.data.WordDataDto
 import com.storozhuk.learningvocabulary.dto.ui.WordDto
 import com.storozhuk.learningvocabulary.service.WordsService
 import com.storozhuk.learningvocabulary.ui.helper.UiHelper.Companion.clearEditText
@@ -325,36 +324,23 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
     }
 
     private fun updateWord(popupView: View) {
-        val newOriginal =
+        val original =
             popupView.findViewById<EditText>(R.id.word_original_input_edit).text.toString()
-        if (newOriginal.isNotEmpty()) {
-            val translated =
-                popupView.findViewById<EditText>(R.id.word_translated_input_edit).text.toString()
-            val selectedSubject =
-                popupView.findViewById<Spinner>(R.id.word_subject_filter).selectedItem.toString()
-            val selectedLanguageId = getLanguageIdFromSelectedInSpinner()
-            var cursor = subjectsRepository.fetchForSubjectAndLanguageId(
-                selectedSubject, selectedLanguageId
-            )
-            val subjectId = cursor.getInt(0)
-            cursor.close()
-            cursor = wordsRepository.findById(selectedEditId)
-            val oldOriginal = cursor.getString(1)
-            cursor.close()
-            if (!oldOriginal.equals(newOriginal) && wordsRepository.existsOriginalWithSubjectId(
-                    newOriginal,
-                    subjectId
-                )
-            ) {
-                showToast(
-                    popupView.context,
-                    "Word $newOriginal already exists in subject $selectedSubject"
-                )
-            } else {
-                val wordDataDto =
-                    WordDataDto(selectedEditId, newOriginal, translated, subjectId)
-                wordsRepository.update(wordDataDto)
-            }
+        val translated =
+            popupView.findViewById<EditText>(R.id.word_translated_input_edit).text.toString()
+        val selectedSubject =
+            popupView.findViewById<Spinner>(R.id.word_subject_filter).selectedItem.toString()
+        val selectedLanguageId = getLanguageIdFromSelectedInSpinner()
+        val cursor = subjectsRepository.fetchForSubjectAndLanguageId(
+            selectedSubject, selectedLanguageId
+        )
+        val subjectId = cursor.getInt(0)
+        cursor.close()
+        val wordDto = WordDto(selectedEditId, original, translated, subjectId)
+        try {
+            wordsService.updateWord(wordDto)
+        } catch (ex: DataProcessException) {
+            showToast(popupView.context, ex.message!!)
         }
     }
 
