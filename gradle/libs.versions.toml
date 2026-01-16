@@ -17,6 +17,7 @@ gtruth = "1.4.2"
 androidx-navigation-testing = "2.7.7"
 androidx-fragment-testing = "1.8.2"
 mybatis = "3.5.19"
+mockito = "5.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -36,6 +37,7 @@ androidx-navigation-testing = { group = "androidx.navigation", name = "navigatio
 androidx-fragment-testing = { group = "androidx.fragment", name = "fragment-testing", version.ref = "androidx-fragment-testing" }
 androidx-fragment-testing-manifest = { group = "androidx.fragment", name = "fragment-testing-manifest", version.ref = "androidx-fragment-testing" }
 mybatis = {group = "org.mybatis", name = "mybatis", version.ref = "mybatis"}
+mockito = {group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

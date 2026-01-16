@@ -6,6 +6,7 @@ import com.storozhuk.learningvocabulary.db.helper.DatabaseHelper
 import com.storozhuk.learningvocabulary.db.repo.LanguagesRepository
 import com.storozhuk.learningvocabulary.db.repo.SubjectsRepository
 import com.storozhuk.learningvocabulary.db.repo.WordsRepository
+import com.storozhuk.learningvocabulary.service.WordsService
 
 open class VocabularyContext : Application() {
 
@@ -13,10 +14,12 @@ open class VocabularyContext : Application() {
     private lateinit var wordsRepository: WordsRepository
     private lateinit var languagesRepository: LanguagesRepository
     private lateinit var subjectsRepository: SubjectsRepository
+    private lateinit var wordsService: WordsService
 
     override fun onCreate() {
         super.onCreate()
         setupDb()
+        initServices()
         Log.d("TestApp", "Database path: ${getDbHelper()?.readableDatabase!!.path}")
     }
 
@@ -32,6 +35,10 @@ open class VocabularyContext : Application() {
         return subjectsRepository
     }
 
+    fun getWordsService(): WordsService {
+        return wordsService
+    }
+
     private fun setupDb() {
         initDbHelper()
         val database = dbHelper!!.writableDatabase
@@ -40,20 +47,12 @@ open class VocabularyContext : Application() {
         subjectsRepository = SubjectsRepository(database, dbHelper!!)
     }
 
+    private fun initServices(){
+        wordsService = WordsService(wordsRepository)
+    }
+
     protected open fun initDbHelper() {
         dbHelper = DatabaseHelper(this.applicationContext)
-    }
-
-    protected fun setLanguagesRepository(languagesRepository: LanguagesRepository) {
-        this.languagesRepository = languagesRepository
-    }
-
-    protected fun setWordsRepository(wordsRepository: WordsRepository) {
-        this.wordsRepository = wordsRepository
-    }
-
-    protected fun setSubjectsRepository(subjectsRepository: SubjectsRepository) {
-        this.subjectsRepository = subjectsRepository;
     }
 
     protected fun setDbHelper(dbHelper: DatabaseHelper) {

@@ -19,6 +19,7 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.core.view.size
 import androidx.fragment.app.Fragment
+import com.storozhuk.learningvocabulary.DataProcessException
 import com.storozhuk.learningvocabulary.R
 import com.storozhuk.learningvocabulary.application.VocabularyContext
 import com.storozhuk.learningvocabulary.db.repo.LanguagesRepository
@@ -26,6 +27,7 @@ import com.storozhuk.learningvocabulary.db.repo.SubjectsRepository
 import com.storozhuk.learningvocabulary.db.repo.WordsRepository
 import com.storozhuk.learningvocabulary.dto.data.WordDataDto
 import com.storozhuk.learningvocabulary.dto.ui.WordDto
+import com.storozhuk.learningvocabulary.service.WordsService
 import com.storozhuk.learningvocabulary.ui.helper.UiHelper.Companion.clearEditText
 import com.storozhuk.learningvocabulary.ui.helper.UiHelper.Companion.dimBackground
 import com.storozhuk.learningvocabulary.ui.helper.UiHelper.Companion.showToast
@@ -38,6 +40,7 @@ import com.storozhuk.learningvocabulary.ui.home.spinner.SubjectsSpinnerAggregato
 class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
 
     private lateinit var fragmentView: View
+    private lateinit var wordsService: WordsService
     private lateinit var wordsRepository: WordsRepository
     private lateinit var languagesRepository: LanguagesRepository
     private lateinit var subjectsRepository: SubjectsRepository
@@ -54,6 +57,7 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         this.fragmentView = view
+        this.wordsService = (activity?.application as VocabularyContext).getWordsService()
         this.wordsRepository = (activity?.application as VocabularyContext).getWordsRepository()
         this.languagesRepository =
             (activity?.application as VocabularyContext).getLanguagesRepository()
@@ -304,22 +308,19 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
 
     private fun addWord(view: View) {
         val original = view.findViewById<EditText>(R.id.word_original_input).text.toString()
+        val translated = view.findViewById<EditText>(R.id.word_translated_input).text.toString()
+        val selectedSubject = subjectsSpinnerAggregator.getSelectedItemValue()
         val selectedLanguageId = getLanguageIdFromSelectedInSpinner()
-        if (original.isNotEmpty()) {
-            val translated = view.findViewById<EditText>(R.id.word_translated_input).text.toString()
-            val selectedSubject = subjectsSpinnerAggregator.getSelectedItemValue()
-            val cursor = subjectsRepository.fetchForSubjectAndLanguageId(
-                selectedSubject!!, selectedLanguageId
-            )
-            val subjectId = cursor.getInt(0)
-            cursor.close()
-            if (wordsRepository.existsOriginalWithSubjectId(original, subjectId)) {
-                showToast(view.context, "Word $original already exists in subject $selectedSubject")
-            } else {
-                // Save word
-                val wordDto = WordDataDto(null, original, translated, subjectId)
-                wordsRepository.insert(wordDto)
-            }
+        val cursor = subjectsRepository.fetchForSubjectAndLanguageId(
+            selectedSubject!!, selectedLanguageId
+        )
+        val subjectId = cursor.getInt(0)
+        cursor.close()
+        val wordDto = WordDto(null, original, translated, subjectId)
+        try {
+            wordsService.addWord(wordDto)
+        } catch (ex: DataProcessException) {
+            showToast(view.context, ex.message!!)
         }
     }
 
