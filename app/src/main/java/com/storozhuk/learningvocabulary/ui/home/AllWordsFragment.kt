@@ -304,46 +304,6 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
             subjectsSpinnerAggregator.getSelectedItemValue()!!
     }
 
-
-    private fun addWord(view: View) {
-        val original = view.findViewById<EditText>(R.id.word_original_input).text.toString()
-        val translated = view.findViewById<EditText>(R.id.word_translated_input).text.toString()
-        val selectedSubject = subjectsSpinnerAggregator.getSelectedItemValue()
-        val selectedLanguageId = getLanguageIdFromSelectedInSpinner()
-        val cursor = subjectsRepository.fetchForSubjectAndLanguageId(
-            selectedSubject!!, selectedLanguageId
-        )
-        val subjectId = cursor.getInt(0)
-        cursor.close()
-        val wordDto = WordDto(null, original, translated, subjectId)
-        try {
-            wordsService.addWord(wordDto)
-        } catch (ex: DataProcessException) {
-            showToast(view.context, ex.message!!)
-        }
-    }
-
-    private fun updateWord(popupView: View) {
-        val original =
-            popupView.findViewById<EditText>(R.id.word_original_input_edit).text.toString()
-        val translated =
-            popupView.findViewById<EditText>(R.id.word_translated_input_edit).text.toString()
-        val selectedSubject =
-            popupView.findViewById<Spinner>(R.id.word_subject_filter).selectedItem.toString()
-        val selectedLanguageId = getLanguageIdFromSelectedInSpinner()
-        val cursor = subjectsRepository.fetchForSubjectAndLanguageId(
-            selectedSubject, selectedLanguageId
-        )
-        val subjectId = cursor.getInt(0)
-        cursor.close()
-        val wordDto = WordDto(selectedEditId, original, translated, subjectId)
-        try {
-            wordsService.updateWord(wordDto)
-        } catch (ex: DataProcessException) {
-            showToast(popupView.context, ex.message!!)
-        }
-    }
-
     private fun deleteSelectedWord() {
         wordsRepository.delete(selectedEditId)
     }
@@ -385,6 +345,24 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
         }
     }
 
+    private fun addWord(view: View) {
+        val original = view.findViewById<EditText>(R.id.word_original_input).text.toString()
+        val translated = view.findViewById<EditText>(R.id.word_translated_input).text.toString()
+        val selectedSubject = subjectsSpinnerAggregator.getSelectedItemValue()
+        val selectedLanguageId = getLanguageIdFromSelectedInSpinner()
+        val cursor = subjectsRepository.fetchForSubjectAndLanguageId(
+            selectedSubject!!, selectedLanguageId
+        )
+        val subjectId = cursor.getInt(0)
+        cursor.close()
+        val wordDto = WordDto(null, original, translated, subjectId)
+        try {
+            wordsService.addWord(wordDto)
+        } catch (ex: DataProcessException) {
+            showToast(view.context, ex.message!!)
+        }
+    }
+
     private fun initEditWordPopup() {
         val inflater = LayoutInflater.from(context)
         editWordPopupView = inflater.inflate(R.layout.remove_word_popup, null)
@@ -415,7 +393,27 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
         }
 
         initSubjectsSpinnerInEditWordPopup()
+    }
 
+    private fun updateWord(popupView: View) {
+        val original =
+            popupView.findViewById<EditText>(R.id.word_original_input_edit).text.toString()
+        val translated =
+            popupView.findViewById<EditText>(R.id.word_translated_input_edit).text.toString()
+        val selectedSubject =
+            popupView.findViewById<Spinner>(R.id.word_subject_filter).selectedItem.toString()
+        val selectedLanguageId = getLanguageIdFromSelectedInSpinner()
+        val cursor = subjectsRepository.fetchForSubjectAndLanguageId(
+            selectedSubject, selectedLanguageId
+        )
+        val subjectId = cursor.getInt(0)
+        cursor.close()
+        val wordDto = WordDto(selectedEditId, original, translated, subjectId)
+        try {
+            wordsService.updateWord(wordDto)
+        } catch (ex: DataProcessException) {
+            showToast(popupView.context, ex.message!!)
+        }
     }
 
     private fun updateWordsTable() {
