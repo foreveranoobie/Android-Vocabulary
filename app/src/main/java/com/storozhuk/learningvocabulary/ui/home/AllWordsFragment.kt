@@ -23,9 +23,9 @@ import com.storozhuk.learningvocabulary.DataProcessException
 import com.storozhuk.learningvocabulary.R
 import com.storozhuk.learningvocabulary.application.VocabularyContext
 import com.storozhuk.learningvocabulary.db.repo.LanguagesRepository
-import com.storozhuk.learningvocabulary.db.repo.SubjectsRepository
 import com.storozhuk.learningvocabulary.db.repo.WordsRepository
 import com.storozhuk.learningvocabulary.dto.ui.WordDto
+import com.storozhuk.learningvocabulary.service.SubjectsService
 import com.storozhuk.learningvocabulary.service.WordsService
 import com.storozhuk.learningvocabulary.ui.helper.UiHelper.Companion.clearEditText
 import com.storozhuk.learningvocabulary.ui.helper.UiHelper.Companion.dimBackground
@@ -40,9 +40,9 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
 
     private lateinit var fragmentView: View
     private lateinit var wordsService: WordsService
+    private lateinit var subjectsService: SubjectsService
     private lateinit var wordsRepository: WordsRepository
     private lateinit var languagesRepository: LanguagesRepository
-    private lateinit var subjectsRepository: SubjectsRepository
     private lateinit var wordsTable: TableLayout
     private lateinit var addWordPopupView: View
     private lateinit var addWordPopupWindow: PopupWindow
@@ -57,11 +57,10 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
         super.onViewCreated(view, savedInstanceState)
         this.fragmentView = view
         this.wordsService = (activity?.application as VocabularyContext).getWordsService()
+        this.subjectsService = (activity?.application as VocabularyContext).getSubjectsService()
         this.wordsRepository = (activity?.application as VocabularyContext).getWordsRepository()
         this.languagesRepository =
             (activity?.application as VocabularyContext).getLanguagesRepository()
-        this.subjectsRepository =
-            (activity?.application as VocabularyContext).getSubjectsRepository()
         languagesSpinnerAggregator =
             LanguagesSpinnerAggregator(fragmentView.findViewById(R.id.languages_filter))
         this.subjectsSpinnerAggregator =
@@ -115,12 +114,7 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
         if (!languagesSpinnerAggregator.isFirstItemSelected()) {
             val selectedLanguageId = getLanguageIdFromSelectedInSpinner()
 
-            val subjectList: List<String>
-            subjectsRepository.fetchForLanguageId(selectedLanguageId).use { cursor ->
-                subjectList = extractElementsFromCursorToArrayList(cursor,
-                    { ArrayList() },
-                    { cursor.getString(1) })
-            }
+            val subjectList = subjectsService.getSubjectsForLanguage(selectedLanguageId)
 
             subjectsSpinnerAggregator.updateDataAndPutIntoActivity(subjectList, requireActivity())
 
@@ -265,18 +259,15 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
         val selectedSubject: String
         if (selectedLanguageId == 1) {
             val subjectId = wordsRepository.fetchByOriginal(originalText).getInt(3)
-
-            val cursor = subjectsRepository.fetchForSubjectId(subjectId)
-            val subjectOriginal = cursor.getString(1)
-            selectedSubject = subjectOriginal
-            selectedLanguageId = cursor.getInt(2)
+            val subjectDto = subjectsService.getSubjectById(subjectId)
+            val subjectOriginal = subjectDto!!.subject
+            selectedSubject = subjectOriginal!!
+            selectedLanguageId = subjectDto.languageId
         } else {
             selectedSubject = subjectsSpinnerAggregator.getSelectedItemValue()!!
         }
 
-        val subjects = subjectsRepository.fetchForLanguageId(selectedLanguageId).use { cursor ->
-            extractElementsFromCursorToArrayList(cursor, { ArrayList() }, { cursor.getString(1) })
-        }
+        val subjects = subjectsService.getSubjectsForLanguage(selectedLanguageId)
 
         subjectsFilter.adapter = createDefaultDropdownDataAdapter(requireActivity(), subjects)
 
@@ -330,6 +321,7 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
             LinearLayout.LayoutParams.WRAP_CONTENT,
             true
         )
+        addWordPopupView.isFocusable = true
         addWordPopupView.findViewById<Button>(R.id.add_btn).setOnClickListener {
             addWord(addWordPopupView)
             updateRowsHavingLanguageAndSubjectSelected()
@@ -350,11 +342,10 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
         val translated = view.findViewById<EditText>(R.id.word_translated_input).text.toString()
         val selectedSubject = subjectsSpinnerAggregator.getSelectedItemValue()
         val selectedLanguageId = getLanguageIdFromSelectedInSpinner()
-        val cursor = subjectsRepository.fetchForSubjectAndLanguageId(
-            selectedSubject!!, selectedLanguageId
-        )
-        val subjectId = cursor.getInt(0)
-        cursor.close()
+        val subjectId = subjectsService.getSubjectByNameAndLanguageId(
+            selectedSubject!!,
+            selectedLanguageId
+        )!!.id
         val wordDto = WordDto(null, original, translated, subjectId)
         try {
             wordsService.addWord(wordDto)
@@ -403,11 +394,10 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
         val selectedSubject =
             popupView.findViewById<Spinner>(R.id.word_subject_filter).selectedItem.toString()
         val selectedLanguageId = getLanguageIdFromSelectedInSpinner()
-        val cursor = subjectsRepository.fetchForSubjectAndLanguageId(
-            selectedSubject, selectedLanguageId
-        )
-        val subjectId = cursor.getInt(0)
-        cursor.close()
+        val subjectId = subjectsService.getSubjectByNameAndLanguageId(
+            selectedSubject,
+            selectedLanguageId
+        )!!.id
         val wordDto = WordDto(selectedEditId, original, translated, subjectId)
         try {
             wordsService.updateWord(wordDto)

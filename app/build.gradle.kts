@@ -52,6 +52,7 @@ dependencies {
     testImplementation(libs.robolectric)
     testImplementation(libs.gtruth)
     testImplementation(libs.mockito)
+    testImplementation(libs.assertj)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.navigation.testing)

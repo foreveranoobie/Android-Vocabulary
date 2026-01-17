@@ -18,6 +18,7 @@ androidx-navigation-testing = "2.7.7"
 androidx-fragment-testing = "1.8.2"
 mybatis = "3.5.19"
 mockito = "5.4.0"
+assertj = "3.27.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,6 +39,7 @@ androidx-fragment-testing = { group = "androidx.fragment", name = "fragment-test
 androidx-fragment-testing-manifest = { group = "androidx.fragment", name = "fragment-testing-manifest", version.ref = "androidx-fragment-testing" }
 mybatis = {group = "org.mybatis", name = "mybatis", version.ref = "mybatis"}
 mockito = {group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito"}
+assertj = {group = "org.assertj", name = "assertj-core", version.ref = "assertj"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

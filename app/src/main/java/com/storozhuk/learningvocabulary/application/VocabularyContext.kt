@@ -6,6 +6,7 @@ import com.storozhuk.learningvocabulary.db.helper.DatabaseHelper
 import com.storozhuk.learningvocabulary.db.repo.LanguagesRepository
 import com.storozhuk.learningvocabulary.db.repo.SubjectsRepository
 import com.storozhuk.learningvocabulary.db.repo.WordsRepository
+import com.storozhuk.learningvocabulary.service.SubjectsService
 import com.storozhuk.learningvocabulary.service.WordsService
 
 open class VocabularyContext : Application() {
@@ -15,6 +16,7 @@ open class VocabularyContext : Application() {
     private lateinit var languagesRepository: LanguagesRepository
     private lateinit var subjectsRepository: SubjectsRepository
     private lateinit var wordsService: WordsService
+    private lateinit var subjectsService: SubjectsService
 
     override fun onCreate() {
         super.onCreate()
@@ -39,6 +41,10 @@ open class VocabularyContext : Application() {
         return wordsService
     }
 
+    fun getSubjectsService(): SubjectsService {
+        return subjectsService
+    }
+
     private fun setupDb() {
         initDbHelper()
         val database = dbHelper!!.writableDatabase
@@ -47,8 +53,9 @@ open class VocabularyContext : Application() {
         subjectsRepository = SubjectsRepository(database, dbHelper!!)
     }
 
-    private fun initServices(){
+    private fun initServices() {
         wordsService = WordsService(wordsRepository)
+        subjectsService = SubjectsService(subjectsRepository)
     }
 
     protected open fun initDbHelper() {
