@@ -27,14 +27,15 @@ import com.storozhuk.learningvocabulary.db.repo.WordsRepository
 import com.storozhuk.learningvocabulary.dto.ui.WordDto
 import com.storozhuk.learningvocabulary.service.SubjectsService
 import com.storozhuk.learningvocabulary.service.WordsService
+import com.storozhuk.learningvocabulary.ui.helper.FragmentHelper
 import com.storozhuk.learningvocabulary.ui.helper.UiHelper.Companion.clearEditText
 import com.storozhuk.learningvocabulary.ui.helper.UiHelper.Companion.dimBackground
 import com.storozhuk.learningvocabulary.ui.helper.UiHelper.Companion.showToast
 import com.storozhuk.learningvocabulary.ui.home.helper.AllWordsFragmentHelper
-import com.storozhuk.learningvocabulary.ui.home.helper.AllWordsFragmentHelper.Companion.createDefaultDropdownDataAdapter
 import com.storozhuk.learningvocabulary.ui.home.helper.AllWordsFragmentHelper.Companion.extractElementsFromCursorToArrayList
-import com.storozhuk.learningvocabulary.ui.home.spinner.LanguagesSpinnerAggregator
-import com.storozhuk.learningvocabulary.ui.home.spinner.SubjectsSpinnerAggregator
+import com.storozhuk.learningvocabulary.ui.common.spinner.LanguagesSpinnerAggregator
+import com.storozhuk.learningvocabulary.ui.common.spinner.SubjectsSpinnerAggregator
+import java.util.stream.Collectors
 
 class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
 
@@ -115,8 +116,8 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
             val selectedLanguageId = getLanguageIdFromSelectedInSpinner()
 
             val subjectList = subjectsService.getSubjectsForLanguage(selectedLanguageId)
-
-            subjectsSpinnerAggregator.updateDataAndPutIntoActivity(subjectList, requireActivity())
+            val subjectNames = subjectList.stream().map { it.subject!! }.collect(Collectors.toList())
+            subjectsSpinnerAggregator.updateDataAndPutIntoActivity(subjectNames, requireActivity())
 
             val onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
@@ -268,8 +269,8 @@ class AllWordsFragment : Fragment(R.layout.fragment_all_words) {
         }
 
         val subjects = subjectsService.getSubjectsForLanguage(selectedLanguageId)
-
-        subjectsFilter.adapter = createDefaultDropdownDataAdapter(requireActivity(), subjects)
+        val subjectNames = subjects.stream().map { it.subject!! }.collect(Collectors.toList())
+        subjectsFilter.adapter = FragmentHelper.createDefaultDropdownDataAdapter(requireActivity(), subjectNames)
 
         subjectsFilter.setSelection(
             AllWordsFragmentHelper.getPositionOfTextInSpinner(

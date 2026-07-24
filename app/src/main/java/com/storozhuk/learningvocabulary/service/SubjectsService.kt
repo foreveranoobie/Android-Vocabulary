@@ -43,13 +43,13 @@ class SubjectsService(val subjectsRepository: SubjectsRepository) {
         return null
     }
 
-    fun getSubjectsForLanguage(languageId: Int): List<String> {
+    fun getSubjectsForLanguage(languageId: Int): List<SubjectDataDto> {
         var cursor: Cursor? = null
-        val result = ArrayList<String>()
+        val result = ArrayList<SubjectDataDto>()
         try {
             cursor = subjectsRepository.fetchForLanguageId(languageId)
             while (!cursor.isAfterLast) {
-                result.add(cursor.getString(1))
+                result.add(SubjectDataDto(cursor.getInt(0), cursor.getString(1), languageId))
                 cursor.moveToNext()
             }
         } catch (_: Exception) {

@@ -15,6 +15,7 @@ import com.storozhuk.learningvocabulary.application.VocabularyContext
 import com.storozhuk.learningvocabulary.db.repo.LanguagesRepository
 import com.storozhuk.learningvocabulary.db.repo.SubjectsRepository
 import com.storozhuk.learningvocabulary.dto.data.SubjectDataDto
+import com.storozhuk.learningvocabulary.ui.helper.FragmentHelper
 import com.storozhuk.learningvocabulary.ui.helper.UiHelper
 import com.storozhuk.learningvocabulary.ui.home.helper.AllWordsFragmentHelper
 import com.storozhuk.learningvocabulary.ui.subject.adapter.SubjectsCustomAdapter
@@ -43,7 +44,7 @@ class AddSubjectFragment : Fragment(R.layout.fragment_add_subject) {
                 { cursor.getString(1) })
         }
 
-        languagesFilter.adapter = AllWordsFragmentHelper.createDefaultDropdownDataAdapter(
+        languagesFilter.adapter = FragmentHelper.createDefaultDropdownDataAdapter(
             requireActivity(), languages
         )
         languagesFilter.isEnabled = true
@@ -59,7 +60,6 @@ class AddSubjectFragment : Fragment(R.layout.fragment_add_subject) {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-                // Do nothing
             }
         }
     }

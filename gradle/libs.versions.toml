@@ -10,8 +10,7 @@ material = "1.10.0"
 constraintlayout = "2.1.4"
 lifecycleLivedataKtx = "2.6.1"
 lifecycleViewmodelKtx = "2.6.1"
-navigationFragmentKtx = "2.6.0"
-navigationUiKtx = "2.6.0"
+navigation = "2.6.0"
 robolectric = "4.12"
 gtruth = "1.4.2"
 androidx-navigation-testing = "2.7.7"
@@ -19,6 +18,7 @@ androidx-fragment-testing = "1.8.2"
 mybatis = "3.5.19"
 mockito = "5.4.0"
 assertj = "3.27.5"
+sqlite-jdbc = "3.49.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -29,11 +29,12 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "j
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+sqlite-jdbc = { group = "org.xerial", name = "sqlite-jdbc", version.ref = "sqlite-jdbc"}
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
-androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
-androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
+androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
+androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
 androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "androidx-navigation-testing" }
 androidx-fragment-testing = { group = "androidx.fragment", name = "fragment-testing", version.ref = "androidx-fragment-testing" }
 androidx-fragment-testing-manifest = { group = "androidx.fragment", name = "fragment-testing-manifest", version.ref = "androidx-fragment-testing" }
@@ -44,4 +45,6 @@ assertj = {group = "org.assertj", name = "assertj-core", version.ref = "assertj"
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+safeargs = {id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation"}
+
 

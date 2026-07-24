@@ -1,15 +1,16 @@
-package com.storozhuk.learningvocabulary.ui.home.spinner
+package com.storozhuk.learningvocabulary.ui.common.spinner
 
 import android.widget.AdapterView
 import android.widget.Spinner
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
+import com.storozhuk.learningvocabulary.ui.helper.FragmentHelper
 import com.storozhuk.learningvocabulary.ui.home.helper.AllWordsFragmentHelper
 
 abstract class AbstractSpinnerAggregator(val spinner: Spinner) {
     fun updateDataAndPutIntoActivity(values: List<String>, activity: FragmentActivity) {
         spinner.adapter =
-            AllWordsFragmentHelper.createDefaultDropdownDataAdapter(activity, values)
+            FragmentHelper.createDefaultDropdownDataAdapter(activity, values)
         spinner.isEnabled = true
         spinner.isVisible = true
     }

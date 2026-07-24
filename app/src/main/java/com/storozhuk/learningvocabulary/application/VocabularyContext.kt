@@ -6,7 +6,10 @@ import com.storozhuk.learningvocabulary.db.helper.DatabaseHelper
 import com.storozhuk.learningvocabulary.db.repo.LanguagesRepository
 import com.storozhuk.learningvocabulary.db.repo.SubjectsRepository
 import com.storozhuk.learningvocabulary.db.repo.WordsRepository
+import com.storozhuk.learningvocabulary.service.LanguagesService
 import com.storozhuk.learningvocabulary.service.SubjectsService
+import com.storozhuk.learningvocabulary.service.TestQuizService
+import com.storozhuk.learningvocabulary.service.TestsGenerator
 import com.storozhuk.learningvocabulary.service.WordsService
 
 open class VocabularyContext : Application() {
@@ -17,6 +20,9 @@ open class VocabularyContext : Application() {
     private lateinit var subjectsRepository: SubjectsRepository
     private lateinit var wordsService: WordsService
     private lateinit var subjectsService: SubjectsService
+    private lateinit var languagesService: LanguagesService
+    private lateinit var testsGenerator: TestsGenerator
+    private lateinit var testQuizService: TestQuizService
 
     override fun onCreate() {
         super.onCreate()
@@ -45,6 +51,18 @@ open class VocabularyContext : Application() {
         return subjectsService
     }
 
+    fun getLanguagesService(): LanguagesService {
+        return languagesService
+    }
+
+    fun getTestsGenerator(): TestsGenerator {
+        return testsGenerator
+    }
+
+    fun getTestQuizService(): TestQuizService {
+        return testQuizService
+    }
+
     private fun setupDb() {
         initDbHelper()
         val database = dbHelper!!.writableDatabase
@@ -56,6 +74,9 @@ open class VocabularyContext : Application() {
     private fun initServices() {
         wordsService = WordsService(wordsRepository)
         subjectsService = SubjectsService(subjectsRepository)
+        languagesService = LanguagesService(languagesRepository)
+        testsGenerator = TestsGenerator(wordsRepository)
+        testQuizService = TestQuizService()
     }
 
     protected open fun initDbHelper() {

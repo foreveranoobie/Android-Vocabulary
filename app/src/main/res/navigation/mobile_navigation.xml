@@ -20,6 +20,46 @@
     <fragment
         android:id="@+id/nav_add_subject"
         android:name="com.storozhuk.learningvocabulary.ui.subject.AddSubjectFragment"
-        android:label="@string/menu_add_language"
+        android:label="@string/menu_add_subject"
         tools:layout="@layout/fragment_add_subject" />
+
+    <fragment
+        android:id="@+id/nav_test"
+        android:name="com.storozhuk.learningvocabulary.ui.test.TestFragment"
+        android:label="Tests"
+        tools:layout="@layout/fragment_test">
+        <action
+            android:id="@+id/action_test_to_quiz"
+            app:destination="@id/nav_quiz" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_quiz"
+        android:name="com.storozhuk.learningvocabulary.ui.test.TestQuizFragment"
+        android:label="Quiz"
+        tools:layout="@layout/fragment_test_quiz">
+        <argument android:name="subjectName" app:argType="string"/>
+        <action
+            android:id="@+id/action_quiz_to_results"
+            app:destination="@id/nav_quiz_results_overview"
+            app:popUpTo="@id/nav_test"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_quiz_results_overview"
+        android:name="com.storozhuk.learningvocabulary.ui.test.TestQuizResultsFragment"
+        android:label="Quiz Results"
+        tools:layout="@layout/fragment_test_results_overview">
+        <argument android:name="subjectName" app:argType="string"/>
+        <action
+            android:id="@+id/action_results_to_detailed"
+            app:destination="@id/nav_quiz_results_detailed" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_quiz_results_detailed"
+        android:name="com.storozhuk.learningvocabulary.ui.test.TestQuizResultsDetailedFragment"
+        android:label="Quiz Results Detailed"
+        tools:layout="@layout/fragment_test_quiz_results_detailed" />
 </navigation>

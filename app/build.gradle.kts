@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.safeargs)
 }
 
 android {
@@ -47,7 +48,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation("org.xerial:sqlite-jdbc:3.49.1.0")
+    implementation(libs.sqlite.jdbc)
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
     testImplementation(libs.gtruth)

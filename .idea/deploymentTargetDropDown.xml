@@ -2,22 +2,13 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AddLanguageFragmentEtETest">
-        <State />
-      </entry>
-      <entry key="AddSubjectFragmentEtETest">
-        <State />
-      </entry>
       <entry key="AllWordsFragmentEtETest">
         <State />
       </entry>
+      <entry key="Tests in 'com.storozhuk.learningvocabulary'">
+        <State />
+      </entry>
       <entry key="app">
-        <State />
-      </entry>
-      <entry key="shouldNotAddLanguage_whenAddingLanguage_givenEmptyLanguageInput()">
-        <State />
-      </entry>
-      <entry key="shouldNotAddLanguage_whenAddingLanguage_givenExistingLanguageInput()">
         <State />
       </entry>
     </value>

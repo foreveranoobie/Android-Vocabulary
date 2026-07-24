@@ -1,4 +1,4 @@
-package com.storozhuk.learningvocabulary.ui.home.spinner
+package com.storozhuk.learningvocabulary.ui.common.spinner
 
 import android.widget.Spinner
 import androidx.fragment.app.FragmentActivity

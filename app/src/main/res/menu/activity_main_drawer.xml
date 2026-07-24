@@ -17,5 +17,9 @@
             android:icon="@android:drawable/ic_input_add"
             android:title="@string/menu_add_subject"
             />
+        <item
+            android:id="@+id/nav_test"
+            android:icon="@android:drawable/ic_menu_agenda"
+            android:title="@string/menu_test" />
     </group>
 </menu>

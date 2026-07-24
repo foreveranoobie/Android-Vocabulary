@@ -7,7 +7,6 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
-import com.storozhuk.learningvocabulary.R
 import java.util.function.Function
 import java.util.function.Supplier
 
